@@ -10,6 +10,98 @@ body {
     /* Match map background */
 }
 
+/* Intro overlay */
+#intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Quantico', sans-serif;
+    color: #ffffff;
+    opacity: 1;
+}
+
+#intro-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 40vh;
+}
+
+#intro-left {
+    display: flex;
+    align-items: center;
+}
+
+#intro-left-text {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0px;
+    white-space: nowrap;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+#intro-right {
+    display: flex;
+    align-items: center;
+    margin-top: 2px;
+}
+
+#intro-dial-window {
+    height: 600px;
+    overflow: hidden;
+    position: relative;
+    width: auto;
+    min-width: 260px;
+    mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0,0,0,0.1) 15%,
+        rgba(0,0,0,0.6) 30%,
+        black 45%,
+        black 55%,
+        rgba(0,0,0,0.6) 70%,
+        rgba(0,0,0,0.1) 85%,
+        transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0,0,0,0.1) 15%,
+        rgba(0,0,0,0.6) 30%,
+        black 45%,
+        black 55%,
+        rgba(0,0,0,0.6) 70%,
+        rgba(0,0,0,0.1) 85%,
+        transparent 100%
+    );
+}
+
+#intro-dial-track {
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+}
+
+.intro-dial-item {
+    height: 40px;
+    line-height: 40px;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.1s, transform 0.1s;
+    transform-origin: left center;
+    text-transform: uppercase;
+}
+
 #map {
     position: absolute;
     top: 0;
@@ -316,13 +408,14 @@ body {
 .journey-progress-bar {
     position: absolute;
     left: 0;
-    bottom: 0;
-    height: 2px;
+    top: 0;
+    height: 100%;
     width: 0%;
     background: #089BDF;
     transition: width 0.1s linear;
     z-index: 0;
     pointer-events: none;
+    border-radius: inherit;
 }
 
 .journey-button-wrapper .pill-button {
@@ -331,10 +424,56 @@ body {
     background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    padding: 6px 16px;
+    font-size: 13px;
+    overflow: hidden;
 }
 
 /* Mobile breakpoints */
 @media (max-width: 768px) {
+    #intro-left-text {
+        font-size: 11px;
+    }
+
+    .intro-dial-item {
+        font-size: 11px;
+        height: 26px;
+        line-height: 26px;
+    }
+
+    #intro-dial-window {
+        height: 360px;
+    }
+
+    #intro-content {
+        gap: 8px;
+        transform: translateX(50px);
+    }
+}
+
+@media (max-width: 430px) {
+    #intro-content {
+        transform: translateX(60px);
+    }
+
+    .pill-button {
+        font-size: 9px;
+        padding: 3px 8px;
+    }
+
+    .journey-button-wrapper .pill-button {
+        font-size: 9px;
+        padding: 4px 10px;
+    }
+
+    .maplibregl-popup {
+        max-width: 170px !important;
+    }
+
+    .info-popup-card {
+        width: 160px;
+    }
+
     .text-group-top-left {
         top: calc(env(safe-area-inset-top, 0px) + 8px);
         left: 8px;

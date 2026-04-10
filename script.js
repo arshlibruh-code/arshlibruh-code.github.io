@@ -5,6 +5,7 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { createRadarChart } from './three-objects.js';
 import { typewriterRandom } from './text-animations.js';
+import { initIntroOverlay, isOverlayActive } from './intro-overlay.js';
 
 const APP_MODES = {
     IDLE: 'IDLE',
@@ -132,6 +133,7 @@ const journeyPopupCleanupHandlers = new Map();
 const activeProjectPopups = new Set();
 const activeProjectPopupById = new Map();
 const projectMarkers = [];
+const journeyMarkers = [];
 const visibleProjectMarkerIds = new Set();
 let projectFlightAnimationFrame = null;
 let projectEntryHandoffTimer = null;
@@ -149,7 +151,7 @@ const journey = [
     {
         name: 'Dehradun',
         coords: [78.04187306639645, 30.324297991273333],
-        description: 'Born and raised in Dehradun, Uttarakhand. The gateway to the mountains.',
+        description: 'Born in the foothills. Mountains were just the default backdrop.',
         image: 'dehradun.webp',
         date: '1996',
         zoom: 12,
@@ -171,7 +173,7 @@ const journey = [
     {
         name: 'Doon Business School',
         coords: [77.8632908995369, 30.37684055270396],
-        description: 'Graduated from Doon Business School, Selaqui with a B.Com degree.',
+        description: 'Three years studying business in the hills. Mostly figuring out what I actually wanted to do.',
         image: 'doonbusiness.webp',
         date: '2015-2018',
         zoom: 17,
@@ -182,7 +184,7 @@ const journey = [
     {
         name: 'Presidency University',
         coords: [77.53514820072209, 13.168697802405879],
-        description: 'Came to Bangalore for MBA at Presidency University.',
+        description: 'Moved to Bangalore for an MBA. The city stuck.',
         image: 'presidency-university.webp',
         date: '2018-2020',
         zoom: 17,
@@ -193,7 +195,7 @@ const journey = [
     {
         name: 'Teamlease',
         coords: [77.62494594852494, 12.94052546680988],
-        description: 'First job at Teamlease, Koramangala.',
+        description: 'First job in sales. Classic post-MBA entry point.',
         image: 'teamlease.webp',
         date: '2020-2021',
         zoom: 17,
@@ -204,7 +206,7 @@ const journey = [
     {
         name: 'Ignitho / Piqual',
         coords: [77.650889974173, 12.920106662087223],
-        description: 'Remote work with a UK-based agency during COVID times.',
+        description: 'First UI/UX role. Remote work with a UK-based agency during COVID times.',
         image: 'ignitho.webp',
         date: 'Jan 2021 - Nov 2021',
         zoom: 18,
@@ -226,8 +228,7 @@ const journey = [
     {
         name: 'Pondicherry',
         coords: [79.83074593230793, 11.902762125054846],
-        description: 'Biked from Bangalore to Pondicherry, an epic road trip with coastal views and French Colony charm.',
-        journeyText: 'Biked Bangalore to Pondicherry. Coastal ride, French-colony vibes.',
+        description: 'Biked Bangalore to Pondicherry. Coastal ride, French-colony vibes.',
         image: 'pondicherry.webp',
         date: 'Stuff I find interesting',
         zoom: 14,
@@ -236,16 +237,16 @@ const journey = [
         wikipedia: 'Puducherry_(union_territory)'
     },
     {
-        name: 'Arsh Bridge',
+        name: 'Arshli Bridge',
         coords: [77.80306340271673, 30.556156968139717],
-        description: 'Arshli Bridge, a cool discovery on the Uttarakhand and Himachal Pradesh border.',
-        journeyText: 'Found Arshli Bridge at the Uttarakhand-Himachal border.',
+        description: 'Found an unnamed bridge at the UK-HP border. Couldn\'t find it on Maps, so I put it there and named it.',
         image: 'arshlibridge.webp',
         date: 'Stuff I find interesting',
         zoom: 18,
         bearing: 180,
         pitch: 0,
-        customUrl: 'https://maps.app.goo.gl/CpAs1FfMCEioi442A'
+        customUrl: 'https://maps.app.goo.gl/CpAs1FfMCEioi442A',
+        linkLabel: 'VIEW ON GOOGLE MAPS'
     }
 ];
 
@@ -358,14 +359,14 @@ const projectsData = [
 
 const dynamicTexts = [
     'I love solving problems across industries, platforms, and systems.',
-    'From first idea to shipped product, I connect planning, design, code, and data.',
-    'Embracing AI to help me iterate solutions fast and deliver faster.',
-    'I turn complex challenges into clear solutions across web, mobile, and enterprise platforms.',
-    'I build with people in mind, listening first and solving with empathy.'
+    'From idea to shipped product. Design, code, and data.',
+    'Using AI to move faster and build smarter.',
+    'Complex problems, clear solutions. Maps, data, and beyond.',
+    'I build with people in mind. Listen first, solve second.'
 ];
 let currentTextIndex = 0;
 
-const PROJECT_MODE_TEXT = 'Some of my favorite projects.';
+const PROJECT_MODE_TEXT = 'Things I\'ve built and shipped.';
 
 function rotateGlobe() {
     if (!isRotating || isInteracting) {
@@ -395,6 +396,30 @@ map.on('mousedown', handleInteractionStart);
 map.on('touchstart', handleInteractionStart);
 map.on('wheel', handleInteractionStart);
 map.on('dragstart', handleInteractionStart);
+
+let journeyDragResumeTimer = null;
+
+map.on('dragstart', () => {
+    if (journeyDragResumeTimer) {
+        clearTimeout(journeyDragResumeTimer);
+        journeyDragResumeTimer = null;
+    }
+    if (isJourneyActive && !isJourneyPausedByPopup) {
+        pauseJourneyForPopup();
+    }
+});
+
+map.on('dragend', () => {
+    if (!isJourneyActive || !isJourneyPausedByPopup) {
+        return;
+    }
+    journeyDragResumeTimer = setTimeout(() => {
+        journeyDragResumeTimer = null;
+        if (isJourneyActive && isJourneyPausedByPopup) {
+            resumeJourneyFromPopup();
+        }
+    }, 300);
+});
 
 function normalizeAssetPath(assetPath) {
     if (!assetPath) {
@@ -691,6 +716,10 @@ function resolveJourneyLink(point) {
 }
 
 function resolveJourneyLinkLabel(point) {
+    if (point.linkLabel) {
+        return point.linkLabel;
+    }
+
     if (point.customUrl) {
         return 'Visit Website';
     }
@@ -773,10 +802,12 @@ function createPopupCard(data, options = {}) {
         body.appendChild(meta);
     }
 
-    const description = document.createElement('p');
-    description.className = 'info-popup-description';
-    description.textContent = truncateText(data.description, 160);
-    body.appendChild(description);
+    if (!data.hideDescription) {
+        const description = document.createElement('p');
+        description.className = 'info-popup-description';
+        description.textContent = truncateText(data.description, 160);
+        body.appendChild(description);
+    }
 
     if (data.linkUrl || data.linkBehavior === 'modal') {
         const cta = document.createElement('a');
@@ -1285,6 +1316,7 @@ function buildJourneyPopupData(point) {
     return {
         title: point.name,
         description: point.description,
+        hideDescription: true,
         image: resolveJourneyImage(point),
         linkUrl: resolveJourneyLink(point),
         linkLabel: resolveJourneyLinkLabel(point),
@@ -1786,8 +1818,7 @@ function addMarkers() {
         }
 
         const marker = new maplibregl.Marker({ element: createMarkerElement(markerContent) })
-            .setLngLat(point.coords)
-            .addTo(map);
+            .setLngLat(point.coords);
 
         marker.getElement().addEventListener('click', () => {
             if (appMode === APP_MODES.PROJECTS_MODE) {
@@ -1799,7 +1830,17 @@ function addMarkers() {
                 autoCloseMs: JOURNEY_POPUP_AUTO_CLOSE_MS
             });
         });
+
+        journeyMarkers.push(marker);
     });
+}
+
+function showJourneyMarkers() {
+    journeyMarkers.forEach((marker) => marker.addTo(map));
+}
+
+function hideJourneyMarkers() {
+    journeyMarkers.forEach((marker) => marker.remove());
 }
 
 function setupRotationToggle() {
@@ -1877,6 +1918,7 @@ function toggleJourney() {
         isJourneyActive = true;
         isJourneyPausedByPopup = false;
         appMode = APP_MODES.JOURNEY_RUNNING;
+        showJourneyMarkers();
         startJourney();
     }
 
@@ -2212,7 +2254,7 @@ function scheduleAutoJourneyStagePopup(point, journeyIndexAtSchedule) {
             pauseOnOpen: false,
             autoCloseMs: null
         });
-    }, JOURNEY_FLY_DURATION_MS);
+    }, JOURNEY_FLY_DURATION_MS / 2);
 }
 
 function startJourney() {
@@ -2222,6 +2264,8 @@ function startJourney() {
         appMode = APP_MODES.IDLE;
         stopProgressAnimation(true);
         clearJourneyStagePopupTimer();
+        closeActiveJourneyPopup();
+        hideJourneyMarkers();
         updateJourneyButtonText();
 
         currentTextIndex = 0;
@@ -2291,6 +2335,7 @@ function stopJourney(options = {}) {
     clearJourneyStagePopupTimer();
     clearJourneyPopupAutoCloseTimer();
     closeActiveJourneyPopup();
+    hideJourneyMarkers();
 
     currentJourneyIndex = 0;
     journeyStepStartedAt = null;
@@ -2374,7 +2419,7 @@ function handleUserInteraction() {
 }
 
 function checkAndStartTextRotation() {
-    if (isJourneyActive || appMode === APP_MODES.PROJECTS_MODE) {
+    if (isJourneyActive || appMode === APP_MODES.PROJECTS_MODE || isOverlayActive()) {
         return;
     }
 
@@ -2492,6 +2537,10 @@ const customLayer = {
     },
     
     render(gl, args) {
+        if (this.radarChart?.userData?.fillMesh) {
+            this.radarChart.userData.fillMesh.material.uniforms.uTime.value = performance.now() / 1000;
+        }
+
         if (this.radarChart && this.animationStartTime) {
             const elapsed = Date.now() - this.animationStartTime;
             
@@ -2506,7 +2555,21 @@ const customLayer = {
                 const subtleBounce = Math.min(1, easeOutCubic + overshoot);
                 
                 this.radarChart.scale.set(subtleBounce, subtleBounce, subtleBounce);
-                this.radarChart.rotation.y += 0.002;
+                const baseSpeed = 0.002;
+                let burstSpeed = 0;
+                if (this.spinBurstStartTime) {
+                    const burstElapsed = (Date.now() - this.spinBurstStartTime) / 1000;
+                    const burstDuration = 2.2;
+                    if (burstElapsed < burstDuration) {
+                        const t = burstElapsed / burstDuration;
+                        const easeIn = 1 - Math.exp(-8 * t);
+                        const decay = Math.exp(-4 * t);
+                        burstSpeed = 0.16 * easeIn * decay;
+                    } else {
+                        this.spinBurstStartTime = null;
+                    }
+                }
+                this.radarChart.rotation.y += baseSpeed + burstSpeed;
                 this.map.triggerRepaint();
             }
         }
@@ -2537,7 +2600,7 @@ const text3DLayer = {
         this.camera = new THREE.Camera();
         this.scene = new THREE.Scene();
         this.scene.background = null;
-        this.textScaleIntroStartZ = 20;
+        this.textScaleIntroStartZ = 15;
         this.textScaleIntroEndZ = 0.004;
         this.textScaleIntroDurationMs = 2400;
         this.textScaleIntroDelayMs = 100;
@@ -2842,6 +2905,7 @@ const buttons3DLayer = {
                             pitch: 45,
                             duration: 2000
                         });
+                        customLayer.spinBurstStartTime = Date.now();
                     }
                 }
             }
@@ -2935,12 +2999,27 @@ const buttons3DLayer = {
             
             // Rotate 90 degrees on X axis (same as text)
             this.buttonsGroup.rotation.x = Math.PI / -2;
-            this.buttonsGroup.scale.z = this.buttonsScaleIntroStartZ;
+            this.buttonsGroup.scale.z = this.buttonsScaleIntroEndZ;
             this.buttonsGroup.scale.x = 2; // X scale (adjust as needed)
             this.buttonsGroup.scale.y = 2; // Y scale (adjust as needed)
             this.buttonsGroup.position.z = 0.7;
-            this.buttonsScaleIntroQueuedAt = performance.now();
-            this.buttonsScaleIntroStartTime = null;
+
+            const introRatio = this.buttonsScaleIntroStartZ / this.buttonsScaleIntroEndZ;
+            this.buttonIntroStates = this.buttonMeshes.map((buttonMesh, index) => {
+                const textMesh = this.textMeshes[index];
+                const buttonBaseZ = buttonMesh.scale.z;
+                const textBaseZ = textMesh ? textMesh.scale.z : 1;
+                buttonMesh.scale.z = buttonBaseZ * introRatio;
+                if (textMesh) textMesh.scale.z = textBaseZ * introRatio;
+                return {
+                    queuedAt: performance.now(),
+                    delay: this.buttonsScaleIntroDelayMs + index * 200,
+                    startTime: null,
+                    done: false,
+                    buttonBaseZ,
+                    textBaseZ
+                };
+            });
             
             this.scene.add(this.buttonsGroup);
         });
@@ -3019,24 +3098,33 @@ const buttons3DLayer = {
             });
         }
 
-        if (this.buttonsGroup && this.buttonsScaleIntroQueuedAt !== null && this.buttonsScaleIntroStartTime === null) {
-            const queuedElapsedMs = performance.now() - this.buttonsScaleIntroQueuedAt;
-            if (queuedElapsedMs >= this.buttonsScaleIntroDelayMs) {
-                this.buttonsScaleIntroStartTime = performance.now();
-                this.buttonsScaleIntroQueuedAt = null;
-            }
-        }
+        if (this.buttonIntroStates && this.buttonMeshes) {
+            this.buttonIntroStates.forEach((state, index) => {
+                if (state.done) return;
+                const buttonMesh = this.buttonMeshes[index];
+                const textMesh = this.textMeshes[index];
+                if (!buttonMesh) return;
 
-        if (this.buttonsGroup && typeof this.buttonsScaleIntroStartTime === 'number') {
-            const elapsedMs = performance.now() - this.buttonsScaleIntroStartTime;
-            const progress = Math.min(1, elapsedMs / this.buttonsScaleIntroDurationMs);
-            const easedProgress = easeOutCubic(progress);
-            this.buttonsGroup.scale.z = lerp(this.buttonsScaleIntroStartZ, this.buttonsScaleIntroEndZ, easedProgress);
+                if (state.startTime === null) {
+                    if (performance.now() - state.queuedAt >= state.delay) {
+                        state.startTime = performance.now();
+                    }
+                    return;
+                }
 
-            if (progress >= 1) {
-                this.buttonsGroup.scale.z = this.buttonsScaleIntroEndZ;
-                this.buttonsScaleIntroStartTime = null;
-            }
+                const elapsed = performance.now() - state.startTime;
+                const progress = Math.min(1, elapsed / this.buttonsScaleIntroDurationMs);
+                const easedProgress = easeOutCubic(progress);
+                const introRatio = this.buttonsScaleIntroStartZ / this.buttonsScaleIntroEndZ;
+                buttonMesh.scale.z = lerp(state.buttonBaseZ * introRatio, state.buttonBaseZ, easedProgress);
+                if (textMesh) textMesh.scale.z = lerp(state.textBaseZ * introRatio, state.textBaseZ, easedProgress);
+
+                if (progress >= 1) {
+                    buttonMesh.scale.z = state.buttonBaseZ;
+                    if (textMesh) textMesh.scale.z = state.textBaseZ;
+                    state.done = true;
+                }
+            });
         }
         
         // Animate rect area light position
@@ -3072,21 +3160,22 @@ map.on('load', () => {
     setupRotationToggle();
     setupJourneyToggle();
     
-    currentTextIndex = 0;
-    updateJourneyText(dynamicTexts[0]);
     updateJourneyDate('');
-    
+
     document.addEventListener('mousemove', () => handleUserInteraction());
     document.addEventListener('click', () => handleUserInteraction());
     
-    checkAndStartTextRotation();
-    
-    // Zoom camera to text on load
-    map.flyTo({
-        center: textCoords,
-        zoom: 9.5,
-        bearing: 10,
-        pitch: 30,
-        duration: 3000
+    initIntroOverlay({
+        onFlyTo: () => {
+            map.flyTo({
+                center: textCoords,
+                zoom: 9.5,
+                bearing: 10,
+                pitch: 30,
+                duration: 3000
+            });
+            currentTextIndex = 0;
+            updateJourneyText(dynamicTexts[0]);
+        }
     });
 });

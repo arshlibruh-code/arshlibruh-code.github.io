@@ -77,13 +77,39 @@ export function createRadarChart(data = [0.8, 0.7, 0.9, 0.6, 0.85, 0.75], maxRad
     fillGeometry.setIndex(fillIndices);
     fillGeometry.computeVertexNormals();
     
-    const fillMaterial = new THREE.MeshStandardMaterial({ 
-        color: dataColor,
+    const fillMaterial = new THREE.ShaderMaterial({
         transparent: true,
-        opacity: 0.5,
-        side: THREE.DoubleSide
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        uniforms: {
+            uTime: { value: 0 },
+            uColor: { value: new THREE.Color(0x089BDF) },
+            uMaxRadius: { value: maxRadius }
+        },
+        vertexShader: `
+            varying vec2 vPosition;
+            void main() {
+                vPosition = position.xy;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform float uTime;
+            uniform vec3 uColor;
+            uniform float uMaxRadius;
+            varying vec2 vPosition;
+            void main() {
+                float dist = length(vPosition);
+                float normalizedDist = clamp(dist / uMaxRadius, 0.0, 1.0);
+                float fresnel = pow(normalizedDist, 1.4);
+                float pulse = 0.55 + 0.45 * sin(uTime * 1.2);
+                float opacity = fresnel * pulse * 0.85 + 0.04;
+                gl_FragColor = vec4(uColor, opacity);
+            }
+        `
     });
     const fillMesh = new THREE.Mesh(fillGeometry, fillMaterial);
+    group.userData.fillMesh = fillMesh;
     group.add(fillMesh);
     
     for (let i = 0; i < numSections; i++) {

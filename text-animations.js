@@ -1,7 +1,7 @@
 // Text animation function
 
-export function typewriterRandom(element, text, speed = 10) {
-    const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+export function typewriterRandom(element, text, speed = 20) {
+    const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%@!?';
     let currentIndex = 0;
     let displayText = '';
     
