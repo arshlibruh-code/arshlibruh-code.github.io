@@ -358,11 +358,11 @@ const projectsData = [
 ];
 
 const dynamicTexts = [
-    'I love solving problems across industries, platforms, and systems.',
-    'From idea to shipped product. Design, code, and data.',
+    'designer who codes. coder who designs.',
+    'I make maps do things they weren\'t supposed to.',
+    'product design × geospatial × whatever\'s interesting.',
+    'I build things until they feel right.',
     'Using AI to move faster and build smarter.',
-    'Complex problems, clear solutions. Maps, data, and beyond.',
-    'I build with people in mind. Listen first, solve second.'
 ];
 let currentTextIndex = 0;
 
@@ -494,6 +494,7 @@ function isProjectDetailModalOpen() {
 }
 
 function openProjectDetailModal(project) {
+    gtag('event', 'project_detail_open', { project_id: project?.id });
     const { modal, detailDiv } = ensureProjectDetailModalElements();
 
     clearProjectDetailModalCleanupTimer();
@@ -1511,6 +1512,7 @@ function addProjectMarkers() {
 
         marker.getElement().addEventListener('click', () => {
             appMode = APP_MODES.PROJECTS_MODE;
+            gtag('event', 'project_popup_open', { project_id: project.id, project_title: project.title });
             toggleProjectPopup(project);
         });
 
@@ -1906,9 +1908,11 @@ function toggleJourney() {
     }
 
     if (isJourneyActive) {
+        gtag('event', 'journey_stopped');
         stopJourney();
         checkAndStartTextRotation();
     } else {
+        gtag('event', 'journey_started');
         closeAllProjectPopups();
         hideProjectMarkers();
         stopProjectFlight();
@@ -1949,6 +1953,7 @@ function setupJourneyToggle() {
 
         if (e.key === 'Escape' && isJourneyActive) {
             e.preventDefault();
+            gtag('event', 'journey_stopped');
             stopJourney();
             checkAndStartTextRotation();
             updateJourneyButtonText();
@@ -2273,6 +2278,7 @@ function startJourney() {
         updateJourneyDate('');
 
         if (currentJourneyIndex >= journey.length) {
+            gtag('event', 'journey_completed');
             map.flyTo({
                 center: textCoords,
                 zoom: 10,
@@ -2419,7 +2425,7 @@ function handleUserInteraction() {
 }
 
 function checkAndStartTextRotation() {
-    if (isJourneyActive || appMode === APP_MODES.PROJECTS_MODE || isOverlayActive()) {
+    if (isJourneyActive || appMode === APP_MODES.PROJECTS_MODE) { // isOverlayActive() skipped — overlay disabled
         return;
     }
 
@@ -2894,10 +2900,12 @@ const buttons3DLayer = {
                     }
                     // Button 1 (PROJECTS) - enter projects mode (manual exploration)
                     else if (buttonIndex === 1) {
+                        gtag('event', 'projects_opened');
                         enterProjectsMode();
                     }
                     // Button 2 is SKILLS - fly to chart
                     else if (buttonIndex === 2) {
+                        gtag('event', 'skills_opened');
                         map.flyTo({
                             center: chartFlyToCoords,
                             zoom: 10.4,
@@ -3165,17 +3173,28 @@ map.on('load', () => {
     document.addEventListener('mousemove', () => handleUserInteraction());
     document.addEventListener('click', () => handleUserInteraction());
     
-    initIntroOverlay({
-        onFlyTo: () => {
-            map.flyTo({
-                center: textCoords,
-                zoom: 9.5,
-                bearing: 10,
-                pitch: 30,
-                duration: 3000
-            });
-            currentTextIndex = 0;
-            updateJourneyText(dynamicTexts[0]);
-        }
+    // intro overlay disabled — preserved for later
+    // initIntroOverlay({
+    //     onFlyTo: () => {
+    //         map.flyTo({
+    //             center: textCoords,
+    //             zoom: 9.5,
+    //             bearing: 10,
+    //             pitch: 30,
+    //             duration: 3000
+    //         });
+    //         currentTextIndex = 0;
+    //         updateJourneyText(dynamicTexts[0]);
+    //     }
+    // });
+
+    map.flyTo({
+        center: textCoords,
+        zoom: 9.5,
+        bearing: 10,
+        pitch: 30,
+        duration: 3000
     });
+    currentTextIndex = 0;
+    updateJourneyText(dynamicTexts[0]);
 });
