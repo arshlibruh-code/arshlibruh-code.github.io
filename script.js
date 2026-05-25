@@ -266,7 +266,7 @@ const projectsData = [
         id: 'project-b',
         markerLabel: 'B',
         title: 'AEREO CLOUD',
-        description: 'Aereo Cloud combines maps, 3D, and structured workflows so teams can author, control, and present spatial experiences in one place.',
+        description: 'Production web-GIS platform for mining and drone survey teams. I conceived the experimental env, pushed 30k+ lines, embedded with mine operators on-site, and defined the specs engineering built from.',
         image: '/aereo-cloud.webp',
         detailImage: '/aereo-cloud-cover.webp',
         linkUrl: 'https://github.com/arshlibruh-code',
@@ -275,7 +275,7 @@ const projectsData = [
         focusTags: ['UX', 'MAPS', '3D WORKFLOWS'],
         showDetailTags: false,
         wipNotice: 'THIS PAGE IS WORK IN PROGRESS',
-        intro: 'Aereo Cloud is a web-based GIS platform that lets teams build, control, and share map and 3D experiences in one place. I led UX from research through delivery: defining the product direction, running research and testing, and turning it into a repeatable design process and design system.',
+        intro: 'Aereo Cloud is a production web-GIS platform used by mining and drone survey teams. I own the experimental environment (30k+ lines across commits), fly to active mine sites to embed with operators, translate what I find into engineering-ready specs, and ship the result. The loop is: field discovery, spec, build, validate, repeat.',
         sections: [
             {
                 heading: 'Context',
@@ -315,7 +315,7 @@ const projectsData = [
         id: 'project-c',
         markerLabel: 'C',
         title: 'MBRT',
-        description: 'Chat-based interactive mapping app that combines natural language processing with Mapbox GL JS for conversational map interactions.',
+        description: 'NLP to 6 specialized map agents. Natural language drives routes, isochrones, buffers, polygons, and elevation profiles — all live in Mapbox.',
         image: '/mbrt.webp',
         linkUrl: 'https://github.com/arshlibruh-code/MBRT',
         linkLabel: 'VIEW ON GITHUB',
@@ -337,7 +337,7 @@ const projectsData = [
         id: 'project-e',
         markerLabel: 'E',
         title: 'EFFECX',
-        description: 'Real-time WebGPU video effects studio with depth matte styling, shader filters, range-based editing, and deterministic CFR exports.',
+        description: 'WebGPU-native real-time video effects. GPU compute shaders, depth matte styling, shader filters, deterministic CFR export.',
         image: '/effecx.webp',
         linkUrl: 'https://github.com/arshlibruh-code/effecx',
         linkLabel: 'VIEW ON GITHUB',
@@ -348,7 +348,7 @@ const projectsData = [
         id: 'project-f',
         markerLabel: 'F',
         title: 'FNDASH',
-        description: 'Plugin-based dashboard with dynamic grid layout, widget management, and support for charts, maps, and BI; vanilla JS, no dependencies.',
+        description: 'Full browser-based BI dashboard with a ReAct AI agent (12 tools, SSE streaming). No server, no build step. MapLibre GL maps, D3 charts, KPI cards, map sync across panels.',
         image: '/fndash.webp',
         linkUrl: 'https://github.com/arshlibruh-code/fndash',
         linkLabel: 'VIEW ON GITHUB',
@@ -361,7 +361,7 @@ const dynamicTexts = [
     'designer who codes. coder who designs.',
     'I make maps do things they weren\'t supposed to.',
     'product design × geospatial × whatever\'s interesting.',
-    'I build things until they feel right.',
+    'I embed in hard problems and ship until they\'re solved.',
     'Using AI to move faster and build smarter.',
 ];
 let currentTextIndex = 0;
@@ -3170,7 +3170,7 @@ map.on('load', () => {
     
     updateJourneyDate('');
 
-    document.addEventListener('mousemove', () => handleUserInteraction());
+    document.addEventListener('mousedown', () => handleUserInteraction());
     document.addEventListener('click', () => handleUserInteraction());
     
     // intro overlay disabled — preserved for later
@@ -3197,4 +3197,5 @@ map.on('load', () => {
     });
     currentTextIndex = 0;
     updateJourneyText(dynamicTexts[0]);
+    checkAndStartTextRotation();
 });

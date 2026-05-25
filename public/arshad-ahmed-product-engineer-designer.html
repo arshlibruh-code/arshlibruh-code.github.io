@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>arshad's resume</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #d4d4d4;
+    background: #111;
+    max-width: 720px;
+    margin: 48px auto;
+    padding: 0 24px;
+  }
+
+  a { color: inherit; text-decoration: none; border-bottom: 1px solid #444; }
+
+  .print-btn {
+    display: block;
+    margin-bottom: 28px;
+    text-align: right;
+  }
+  .print-btn button {
+    font-family: inherit;
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid #444;
+    padding: 5px 12px;
+    cursor: pointer;
+    color: #888;
+  }
+  .print-btn button:hover { border-color: #888; color: #d4d4d4; }
+
+  /* Header */
+  .header { margin-bottom: 28px; }
+  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 2px; color: #f0f0f0; }
+  .header .title { font-size: 13px; color: #888; margin-bottom: 8px; font-style: italic; }
+  .header .links { font-size: 12px; color: #aaa; }
+  .header .links span { margin: 0 5px; color: #444; }
+
+  /* Section */
+  section { margin-bottom: 26px; }
+  h2 {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #777;
+    border-bottom: 1px dashed #333;
+    padding-bottom: 4px;
+    margin-bottom: 14px;
+  }
+
+  /* Experience & Education entries */
+  .entry { margin-bottom: 16px; }
+  .entry-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .entry h3 { font-size: 15px; font-weight: 700; color: #f0f0f0; }
+  .entry .meta { font-size: 11px; color: #888; white-space: nowrap; margin-left: 12px; }
+  .entry ul { margin-top: 5px; padding-left: 16px; }
+  .entry ul li { margin-bottom: 3px; }
+
+  /* Projects */
+  .project { margin-bottom: 11px; }
+  .project h3 { font-size: 13px; font-weight: 700; display: inline; color: #f0f0f0; }
+  .project p { display: inline; color: #aaa; }
+
+  /* Skills */
+  .skills-row { margin-bottom: 5px; }
+  .skills-row strong { font-size: 11px; color: #888; }
+
+  /* Print — force light for PDF readability */
+  @media print {
+    body { margin: 0; padding: 32px 40px; max-width: 100%; font-size: 12px; background: #fff; color: #1a1a1a; }
+    .header h1, .entry h3, .project h3 { color: #1a1a1a; }
+    .header .title { color: #555; }
+    .header .links { color: #444; }
+    h2 { color: #888; border-bottom-color: #e8e8e8; }
+    .entry .meta { color: #666; }
+    .project p { color: #333; }
+    .skills-row strong { color: #555; }
+    a { border-bottom: none; color: #1a1a1a; }
+    .print-btn { display: none; }
+    @page { margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="print-btn">
+  <button onclick="window.print()">Save as PDF</button>
+</div>
+
+<div class="header">
+  <h1>Arshad Ahmed</h1>
+  <div class="title">Product Engineer &amp; Designer</div>
+  <div class="links">
+    <a href="https://arshlibruh-code.github.io" target="_blank" rel="noopener noreferrer">portfolio</a><span>·</span>
+    <a href="https://github.com/arshlibruh-code" target="_blank" rel="noopener noreferrer">github.com/arshlibruh-code</a><span>·</span>
+    <a href="https://linkedin.com/in/arshlibruh" target="_blank" rel="noopener noreferrer">linkedin.com/in/arshlibruh</a><span>·</span>
+    <a href="mailto:arshlibruh@gmail.com">arshlibruh@gmail.com</a><span>·</span>
+    <a href="tel:+918937049848">+91 89370 49848</a>
+  </div>
+</div>
+
+<section>
+  <h2 style="display:flex; justify-content:space-between; align-items:baseline;">
+    <span>Work Experience</span>
+    <span style="font-size:10px; letter-spacing:0.8px; color:#999; font-weight:400; text-transform:none;">PRODUCT: <span id="dur-product"></span> &nbsp;·&nbsp; SALES: <span id="dur-sales"></span> &nbsp;·&nbsp; TOTAL: <span id="dur-total"></span></span>
+  </h2>
+
+  <div class="entry">
+    <div class="entry-header">
+      <h3>Product Engineer &amp; Designer, Aereo</h3>
+
+      <span class="meta">Nov 2021 – Present · <span id="aereo-duration"></span> · Bengaluru, India</span>
+    </div>
+    <ul>
+      <li>Own and operate an experimental deployment environment for Aereo Cloud (<a href="https://experiments.cloud.aereo.co.in" target="_blank" rel="noopener noreferrer">experiments.cloud.aereo.co.in</a>): first commit alone was 20k+ lines, go/no-go decision framework, beta-validated with users before anything hits the standard sprint.</li>
+      <li>Ran multiple on-site visits with mining and survey teams to understand how work actually happens. Replaced DGPS stockpile walkdowns with drone-based volumetrics processed in the cloud, accurate from the office.</li>
+      <li>Wrote specs for complex geospatial features (point cloud tools, DXF support, terrain analysis) backed by competitive research across Propeller, Strayos, Maptek, and Datamine.</li>
+      <li>Built deep domain expertise in mining workflows: ore body models, drill &amp; blast, stockpile volumes, mine planning software. Enough to drive technical decisions, not just design ones.</li>
+      <li>Took workflows that needed Global Mapper and AutoCAD on expensive hardware and made them run in a browser. Any device, any screen, no setup.</li>
+      <li>Defined interaction models for complex spatial workflows: 3D camera orchestration, underground visualization, multi-step digitization. Implemented as state machines, not just specs.</li>
+      <li>Led Aereo Go research, design, and launch. Replaced printed field maps with live data on the phones operators already carried.</li>
+      <li>Established design system, UX processes, and research practice from zero. Maintained and scaled across 3 simultaneous projects.</li>
+      <li>Collaborated with 20+ engineers, PMs, and data scientists; managed a team of 4+ designers.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <h3>Key Account Manager, TeamLease Services</h3>
+      <span class="meta">Jan 2020 – Feb 2021 · 1 yr 1 mo · Bengaluru, India</span>
+    </div>
+    <ul>
+      <li>Managed a 20+ client portfolio worth 2M+ INR. Owned client communication, stakeholder alignment, and risk mitigation across accounts.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <h3>UX/UI Designer, Ignitho Technologies (+1)</h3>
+      <span class="meta">Jan 2021 – Nov 2021 · 11 mos · Bengaluru, India</span>
+    </div>
+    <ul>
+      <li>Delivered development-ready designs for websites, apps, and dashboards across 5+ client projects with global cross-functional teams.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Projects</h2>
+
+  <div class="project">
+    <h3><a href="https://github.com/arshlibruh-code/fndash" target="_blank" rel="noopener noreferrer">fndash</a>: </h3><p>Browser-based BI dashboard with a ReAct AI agent (12 tools, SSE streaming). No server, no build step. Drag-and-drop widgets: MapLibre GL maps, D3 charts, KPI cards, CSV tables. ArcGIS basemaps, GeoJSON layers, map sync across panels.</p>
+  </div>
+  <div class="project">
+    <h3><a href="https://github.com/arshlibruh-code/MBRT" target="_blank" rel="noopener noreferrer">MBRT</a>: </h3><p>NLP to 6 specialized map agents. Natural language drives point markers, routes, buffers/geofences, isochrones, polygons, and elevation profiles via Mapbox GL JS + agentic ReAct workflows.</p>
+  </div>
+  <div class="project">
+    <h3><a href="https://github.com/arshlibruh-code/effecx" target="_blank" rel="noopener noreferrer">effecx</a>: </h3><p>WebGPU-native real-time video effects. GPU compute shaders, depth matte styling, shader filters, deterministic CFR export.</p>
+  </div>
+  <div class="project">
+    <h3><a href="https://github.com/arshlibruh-code/PointPro" target="_blank" rel="noopener noreferrer">PointPro</a>: </h3><p>Native iOS app for point cloud capture and processing using device LiDAR.</p>
+  </div>
+  <div class="project">
+    <h3>NodeMap: </h3><p>Local-first, node-based geospatial analysis app for macOS. Visual raster/vector workflows powered by GDAL and SwiftUI.</p>
+  </div>
+  <div class="project">
+    <h3>Volt: </h3><p>Real-time procedural terrain engine on WebGPU. GPU compute shaders for simplex noise, FBM, hydraulic erosion, and thermal weathering. All heavy lifting stays on GPU.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Skills</h2>
+  <div class="skills-row"><strong>AI / Agents</strong> &nbsp; ReAct workflows · agentic tool use · function calling · SSE streaming · LLM integration · MCP</div>
+  <div class="skills-row"><strong>Frontend</strong> &nbsp; React · Three.js · MapLibre GL v5+ · Mapbox · WebGPU · GLSL shaders · GPU compute · HTML/CSS/JS · GSAP · ScrollTrigger · Vite</div>
+  <div class="skills-row"><strong>Backend</strong> &nbsp; Python · FastAPI · uvicorn · Node.js · Bun · SQL · WebSockets · Supabase · numpy · pydantic · trimesh · nginx</div>
+  <div class="skills-row"><strong>Geospatial</strong> &nbsp; GDAL · DXF · LAS/LAZ · point clouds · photogrammetry · drone data pipelines · GeoJSON · ArcGIS · PDAL · CRS / coordinate systems · COLMAP</div>
+  <div class="skills-row"><strong>3D &amp; Media</strong> &nbsp; Blender · Three.js · FFmpeg · DaVinci Resolve · gltf-transform (Draco + KTX2)</div>
+  <div class="skills-row"><strong>Product</strong> &nbsp; Interaction Design · Design Systems · Rapid Prototyping · Data Visualization · User Research</div>
+  <div class="skills-row"><strong>Tools</strong> &nbsp; Figma · Adobe Creative Suite · Cursor · Claude Code · Codex · Git · GitLab · GitHub CLI · Swift</div>
+</section>
+
+
+<script>
+  function duration(startYear, startMonth, endYear, endMonth) {
+    const end = endYear ? new Date(endYear, endMonth - 1) : new Date();
+    let years = end.getFullYear() - startYear;
+    let months = end.getMonth() + 1 - startMonth;
+    if (months < 0) { years--; months += 12; }
+    const y = years > 0 ? years + ' yr' + (years > 1 ? 's' : '') : '';
+    const m = months > 0 ? months + ' mo' + (months > 1 ? 's' : '') : '';
+    return [y, m].filter(Boolean).join(' ');
+  }
+  document.getElementById('aereo-duration').textContent = duration(2021, 11);
+  document.getElementById('dur-product').textContent = duration(2021, 1);
+  document.getElementById('dur-sales').textContent = duration(2020, 1, 2021, 2);
+  document.getElementById('dur-total').textContent = duration(2020, 1);
+</script>
+
+<section>
+  <h2>Education</h2>
+
+  <div class="entry">
+    <div class="entry-header">
+      <h3>Google UX Certification, Coursera</h3>
+      <span class="meta">Apr 2021 – Sept 2021 · Online</span>
+    </div>
+    <ul>
+      <li>7 courses, perfect scores. UX research, inclusive design, prototyping &amp; usability testing.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
+      <h3>MBA, Presidency University</h3>
+      <span class="meta">June 2018 – June 2020 · Bengaluru, India</span>
+    </div>
+    <ul>
+      <li>Marketing &amp; Data Science · 7.12 CGPA · Entrepreneurship competition winner (Supernanny)</li>
+    </ul>
+  </div>
+</section>
+
+</body>
+</html>
