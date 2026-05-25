@@ -204,7 +204,7 @@ body {
     color: white;
     z-index: 1000;
     text-align: right;
-    opacity: 0.5;
+    opacity: 0.8;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -257,7 +257,8 @@ body {
 .text-group-btm-right a.tagline {
     font-size: 12px;
     letter-spacing: 0.2px;
-    font-weight: 400;
+    font-weight: 300;
+    opacity: 0.5;
     margin-bottom: 0;
     margin-top: 0;
     user-select: none;
@@ -713,12 +714,10 @@ body {
 }
 
 .project-detail-hero {
-    width: 100%;
-    height: clamp(200px, 36vh, 420px);
     display: block;
-    object-fit: cover;
-    object-position: top center;
-    background: #101318;
+    width: 100%;
+    height: auto;
+    margin: 0;
 }
 
 .project-detail-section {
@@ -796,28 +795,21 @@ body {
 
 .project-detail-wip-card {
     margin: 12px auto 72px;
-    width: 100%;
-    max-width: 980px;
-    padding: 26px 24px;
-    border-radius: 16px;
-    border: 1px solid rgba(8, 155, 223, 0.58);
-    background: rgba(8, 155, 223, 0.16);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 16px 44px rgba(8, 155, 223, 0.2);
+    width: fit-content;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid rgba(8, 155, 223, 0.4);
+    background: rgba(8, 155, 223, 0.08);
 }
 
 .project-detail-wip-text {
     margin: 0;
     text-align: center;
     font-family: 'Quantico', sans-serif;
-    font-size: clamp(40px, 8vw, 96px);
-    line-height: 0.92;
-    letter-spacing: -1px;
+    font-size: 11px;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.92);
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.92);
-    -webkit-text-fill-color: transparent;
+    color: rgba(8, 155, 223, 0.8);
 }
 
 .project-detail-block {
@@ -930,7 +922,9 @@ body {
     }
 
     .project-detail-hero {
-        height: clamp(170px, 30vh, 260px);
+        width: 100%;
+        height: auto;
+        margin: 0;
     }
 
     .project-detail-section {
@@ -958,14 +952,6 @@ body {
         padding: 16px 12px;
         border-radius: 12px;
         overflow: hidden;
-    }
-
-    .project-detail-wip-text {
-        font-size: clamp(24px, 8.8vw, 52px);
-        line-height: 1.02;
-        letter-spacing: -0.2px;
-        overflow-wrap: anywhere;
-        word-break: break-word;
     }
 
     .project-detail-block {
@@ -1172,8 +1158,4 @@ body {
         padding: 6px !important;
     }
 
-    .project-detail-wip-text {
-        font-size: clamp(22px, 8vw, 40px);
-        line-height: 1.04;
-    }
 }

@@ -273,9 +273,10 @@ const projectsData = [
         linkLabel: 'VIEW PROJECT',
         linkBehavior: 'modal',
         focusTags: ['UX', 'MAPS', '3D WORKFLOWS'],
+        hideTitle: true,
         showDetailTags: false,
         wipNotice: 'THIS PAGE IS WORK IN PROGRESS',
-        intro: 'Aereo Cloud is a production web-GIS platform used by mining and drone survey teams. I own the experimental environment (30k+ lines across commits), fly to active mine sites to embed with operators, translate what I find into engineering-ready specs, and ship the result. The loop is: field discovery, spec, build, validate, repeat.',
+        intro: 'Aereo Cloud is a production web-GIS platform used by mining and drone survey teams. I own the experimental environment (<a href="https://experiments.cloud.aereo.co.in" target="_blank" rel="noopener noreferrer" style="color:inherit;opacity:0.7;text-underline-offset:3px;">experiments.cloud.aereo.co.in</a>) (30k+ lines across commits), fly to active mine sites to embed with operators, translate what I find into engineering-ready specs, and ship the result. The loop is: field discovery, spec, build, validate, repeat.',
         sections: [
             {
                 heading: 'Context',
@@ -535,6 +536,7 @@ function openProjectDetailModal(project) {
     const heading = document.createElement('h2');
     heading.className = 'project-detail-title';
     heading.textContent = project?.title || 'Project';
+    if (project?.hideTitle) heading.style.display = 'none';
 
     const subtitle = typeof project?.subtitle === 'string' ? project.subtitle : '';
     const introText = typeof project?.intro === 'string'
@@ -569,7 +571,7 @@ function openProjectDetailModal(project) {
 
     const intro = document.createElement('p');
     intro.className = 'project-detail-intro';
-    intro.textContent = introText;
+    intro.innerHTML = introText;
     contentSection.appendChild(intro);
 
     const story = document.createElement('div');
