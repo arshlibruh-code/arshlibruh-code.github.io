@@ -19,7 +19,7 @@
     padding: 0 24px;
   }
 
-  a { color: inherit; text-decoration: none; border-bottom: 1px solid #444; }
+  a { color: inherit; text-decoration: none; border-bottom: 1px dashed #555; }
 
   .print-btn {
     display: block;
@@ -45,6 +45,7 @@
   .header .title { font-size: 13px; color: #888; margin-bottom: 8px; font-style: italic; }
   .header .links { font-size: 12px; color: #aaa; }
   .header .links span { margin: 0 5px; color: #444; }
+  .summary { font-size: 13px; color: #b0b0b0; line-height: 1.55; margin-top: 14px; }
 
   /* Section */
   section { margin-bottom: 26px; }
@@ -78,17 +79,19 @@
 
   /* Print — force light for PDF readability */
   @media print {
-    body { margin: 0; padding: 32px 40px; max-width: 100%; font-size: 12px; background: #fff; color: #1a1a1a; }
+    body { margin: 0; padding: 0; max-width: 100%; font-size: 12px; line-height: 1.4; background: #fff; color: #1a1a1a; }
+    section, .entry, .project { break-inside: avoid; }
     .header h1, .entry h3, .project h3 { color: #1a1a1a; }
     .header .title { color: #555; }
+    .summary { color: #333; }
     .header .links { color: #444; }
     h2 { color: #888; border-bottom-color: #e8e8e8; }
     .entry .meta { color: #666; }
     .project p { color: #333; }
     .skills-row strong { color: #555; }
-    a { border-bottom: none; color: #1a1a1a; }
+    a { border-bottom: 1px dashed #999; color: #1a1a1a; }
     .print-btn { display: none; }
-    @page { margin: 0; }
+    @page { margin: 16mm; }
   }
 </style>
 </head>
@@ -100,7 +103,7 @@
 
 <div class="header">
   <h1>Arshad Ahmed</h1>
-  <div class="title">Product Engineer &amp; Designer</div>
+  <div class="title">Product Designer &amp; Engineer</div>
   <div class="links">
     <a href="https://arshlibruh-code.github.io" target="_blank" rel="noopener noreferrer">portfolio</a><span>·</span>
     <a href="https://github.com/arshlibruh-code" target="_blank" rel="noopener noreferrer">github.com/arshlibruh-code</a><span>·</span>
@@ -108,7 +111,19 @@
     <a href="mailto:arshlibruh@gmail.com">arshlibruh@gmail.com</a><span>·</span>
     <a href="tel:+918937049848">+91 89370 49848</a>
   </div>
+  <div class="summary">Self-taught product designer and engineer with 5+ years building 3D, geospatial, and real-time web tools. Three.js, WebGL, GLSL shaders, WebGPU, Mapbox/GIS pipelines. I turn complex spatial data into interfaces that ship.</div>
 </div>
+
+<section>
+  <h2>Skills</h2>
+  <div class="skills-row"><strong>Frontend</strong> &nbsp; React · Three.js · WebGL · MapLibre GL v5+ · Mapbox · WebGPU · GLSL Shaders · GPU Compute · HTML/CSS/JS · GSAP · ScrollTrigger · Vite</div>
+  <div class="skills-row"><strong>Geospatial</strong> &nbsp; GDAL · DXF · LAS/LAZ · Point Clouds · Photogrammetry · Drone Data Pipelines · GeoJSON · ArcGIS · PDAL · CRS / Coordinate Systems · COLMAP</div>
+  <div class="skills-row"><strong>3D &amp; Media</strong> &nbsp; Blender · Three.js · FFmpeg · DaVinci Resolve · gltf-transform (Draco + KTX2)</div>
+  <div class="skills-row"><strong>AI / Agents</strong> &nbsp; ReAct Workflows · Agentic Tool Use · Function Calling · SSE Streaming · LLM Integration · MCP</div>
+  <div class="skills-row"><strong>Backend</strong> &nbsp; Python · FastAPI · uvicorn · Node.js · Bun · SQL · WebSockets · Supabase · numpy · pydantic · trimesh · nginx</div>
+  <div class="skills-row"><strong>Product</strong> &nbsp; Interaction Design · Design Systems · Rapid Prototyping · Data Visualization · User Research</div>
+  <div class="skills-row"><strong>Tools</strong> &nbsp; Figma · Adobe Creative Suite · Cursor · Claude Code · Codex · Git · GitLab · GitHub CLI · Swift</div>
+</section>
 
 <section>
   <h2 style="display:flex; justify-content:space-between; align-items:baseline;">
@@ -118,7 +133,7 @@
 
   <div class="entry">
     <div class="entry-header">
-      <h3>Product Designer, Aereo</h3>
+      <h3>Product Designer &amp; Engineer, Aereo</h3>
 
       <span class="meta">Nov 2021 – Present · <span id="aereo-duration"></span> · Bengaluru, India</span>
     </div>
@@ -137,6 +152,16 @@
 
   <div class="entry">
     <div class="entry-header">
+      <h3>UI/UX Designer, Ignitho Technologies (+1)</h3>
+      <span class="meta">Jan 2021 – Nov 2021 · 11 mos · Bengaluru, India</span>
+    </div>
+    <ul>
+      <li>Delivered development-ready designs for websites, apps, and dashboards across 5+ client projects with global cross-functional teams.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-header">
       <h3>Key Account Manager, TeamLease Services</h3>
       <span class="meta">Jan 2020 – Feb 2021 · 1 yr 1 mo · Bengaluru, India</span>
     </div>
@@ -144,21 +169,14 @@
       <li>Managed a 20+ client portfolio worth 2M+ INR. Owned client communication, stakeholder alignment, and risk mitigation across accounts.</li>
     </ul>
   </div>
-
-  <div class="entry">
-    <div class="entry-header">
-      <h3>UX/UI Designer, Ignitho Technologies (+1)</h3>
-      <span class="meta">Jan 2021 – Nov 2021 · 11 mos · Bengaluru, India</span>
-    </div>
-    <ul>
-      <li>Delivered development-ready designs for websites, apps, and dashboards across 5+ client projects with global cross-functional teams.</li>
-    </ul>
-  </div>
 </section>
 
 <section>
   <h2>Projects</h2>
 
+  <div class="project">
+    <h3><a href="https://holision.pages.dev" target="_blank" rel="noopener noreferrer">holision</a>: </h3><p>Browser-based terrain cut/fill analysis, live. Three.js + custom GLSL shaders, real elevation (Terrarium tiles) streamed and decoded, ArcGIS satellite overlay, contour and volume compute.</p>
+  </div>
   <div class="project">
     <h3><a href="https://github.com/arshlibruh-code/fndash" target="_blank" rel="noopener noreferrer">fndash</a>: </h3><p>Browser-based BI dashboard with a ReAct AI agent (12 tools, SSE streaming). No server, no build step. Drag-and-drop widgets: MapLibre GL maps, D3 charts, KPI cards, CSV tables. ArcGIS basemaps, GeoJSON layers, map sync across panels.</p>
   </div>
@@ -169,26 +187,13 @@
     <h3><a href="https://github.com/arshlibruh-code/effecx" target="_blank" rel="noopener noreferrer">effecx</a>: </h3><p>WebGPU-native real-time video effects. GPU compute shaders, depth matte styling, shader filters, deterministic CFR export.</p>
   </div>
   <div class="project">
-    <h3><a href="https://github.com/arshlibruh-code/PointPro" target="_blank" rel="noopener noreferrer">PointPro</a>: </h3><p>Native iOS app for point cloud capture and processing using device LiDAR.</p>
-  </div>
-  <div class="project">
-    <h3>NodeMap: </h3><p>Local-first, node-based geospatial analysis app for macOS. Visual raster/vector workflows powered by GDAL and SwiftUI.</p>
+    <h3>stagr: </h3><p>Generative episode pipeline. Three.js/WebGL render layer driving Playwright + FFmpeg 4K export, AI-scripted scenes from a single manifest.</p>
   </div>
   <div class="project">
     <h3>Volt: </h3><p>Real-time procedural terrain engine on WebGPU. GPU compute shaders for simplex noise, FBM, hydraulic erosion, and thermal weathering. All heavy lifting stays on GPU.</p>
   </div>
 </section>
 
-<section>
-  <h2>Skills</h2>
-  <div class="skills-row"><strong>AI / Agents</strong> &nbsp; ReAct workflows · agentic tool use · function calling · SSE streaming · LLM integration · MCP</div>
-  <div class="skills-row"><strong>Frontend</strong> &nbsp; React · Three.js · MapLibre GL v5+ · Mapbox · WebGPU · GLSL shaders · GPU compute · HTML/CSS/JS · GSAP · ScrollTrigger · Vite</div>
-  <div class="skills-row"><strong>Backend</strong> &nbsp; Python · FastAPI · uvicorn · Node.js · Bun · SQL · WebSockets · Supabase · numpy · pydantic · trimesh · nginx</div>
-  <div class="skills-row"><strong>Geospatial</strong> &nbsp; GDAL · DXF · LAS/LAZ · point clouds · photogrammetry · drone data pipelines · GeoJSON · ArcGIS · PDAL · CRS / coordinate systems · COLMAP</div>
-  <div class="skills-row"><strong>3D &amp; Media</strong> &nbsp; Blender · Three.js · FFmpeg · DaVinci Resolve · gltf-transform (Draco + KTX2)</div>
-  <div class="skills-row"><strong>Product</strong> &nbsp; Interaction Design · Design Systems · Rapid Prototyping · Data Visualization · User Research</div>
-  <div class="skills-row"><strong>Tools</strong> &nbsp; Figma · Adobe Creative Suite · Cursor · Claude Code · Codex · Git · GitLab · GitHub CLI · Swift</div>
-</section>
 
 
 <script>
@@ -209,16 +214,6 @@
 
 <section>
   <h2>Education</h2>
-
-  <div class="entry">
-    <div class="entry-header">
-      <h3>Google UX Certification, Coursera</h3>
-      <span class="meta">Apr 2021 – Sept 2021 · Online</span>
-    </div>
-    <ul>
-      <li>7 courses, perfect scores. UX research, inclusive design, prototyping &amp; usability testing.</li>
-    </ul>
-  </div>
 
   <div class="entry">
     <div class="entry-header">
