@@ -51,7 +51,9 @@ const map = new maplibregl.Map({
         },
         sources: {
             satellite: {
-                tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+                tiles: [`https://api.maptiler.com/maps/satellite-v4/{z}/{x}/{y}.jpg?key=${import.meta.env.VITE_MAPTILER_KEY}`],
+                tileSize: 512,
+                attribution: '© MapTiler © OpenStreetMap contributors',
                 type: 'raster'
             }
         },
