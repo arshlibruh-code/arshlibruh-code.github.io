@@ -1,0 +1,144 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
+  "basics": {
+    "name": "Arshad Ahmed",
+    "label": "Design Engineer, Spatial and 3D Tools",
+    "email": "arshlibruh@gmail.com",
+    "phone": "+91 89370 49848",
+    "url": "https://arshlibruh-code.github.io",
+    "summary": "Designs spatial tools and builds them, down to the renderer, by directing AI agents: owns the architecture, the specs and the review, and the agents write the code. Nearly five years on a production web-GIS platform for mining and drone survey.",
+    "location": {
+      "city": "Bengaluru",
+      "countryCode": "IN"
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "arshlibruh-code",
+        "url": "https://github.com/arshlibruh-code"
+      },
+      {
+        "network": "LinkedIn",
+        "username": "arshlibruh",
+        "url": "https://linkedin.com/in/arshlibruh"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Aereo",
+      "position": "Product Designer & Engineer",
+      "location": "Bengaluru, India",
+      "startDate": "2021-11",
+      "highlights": [
+        "Took workflows that needed Global Mapper and AutoCAD on expensive hardware and made them run in a browser.",
+        "Established the design system, UX processes and research practice from zero, scaled across 3 simultaneous projects.",
+        "Replaced DGPS stockpile walkdowns with drone-based volumetrics processed in the cloud.",
+        "Own and operate an experimental deployment environment where ideas are prototyped on real data and pass a go/no-go gate before the sprint.",
+        "Led a small design team of full-time designers and interns, and set how design worked with 20+ engineers, PMs and data scientists."
+      ]
+    },
+    {
+      "name": "Ignitho Technologies",
+      "position": "UI/UX Designer",
+      "location": "Bengaluru, India",
+      "startDate": "2021-01",
+      "endDate": "2021-11"
+    },
+    {
+      "name": "TeamLease Services",
+      "position": "Key Account Manager",
+      "location": "Bengaluru, India",
+      "startDate": "2020-01",
+      "endDate": "2021-01"
+    }
+  ],
+  "education": [
+    {
+      "institution": "Presidency University",
+      "area": "Marketing and Data Science",
+      "studyType": "MBA",
+      "startDate": "2018-06",
+      "endDate": "2020-06"
+    },
+    {
+      "institution": "HNB Garhwal University (Doon Business School, Dehradun)",
+      "area": "Commerce",
+      "studyType": "B.Com",
+      "startDate": "2015",
+      "endDate": "2018"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Spatial and 3D",
+      "keywords": [
+        "WebGPU",
+        "WebGL",
+        "Three.js",
+        "GLSL shaders",
+        "Gaussian splatting",
+        "MapLibre GL",
+        "Point clouds",
+        "LAS/LAZ",
+        "CRS"
+      ]
+    },
+    {
+      "name": "Design",
+      "keywords": [
+        "Product design",
+        "Interaction design",
+        "Design systems",
+        "Field research",
+        "Data-dense tools",
+        "Figma"
+      ]
+    },
+    {
+      "name": "Building with agents",
+      "keywords": [
+        "Claude Code",
+        "Codex",
+        "Architecture and specs",
+        "Agent review",
+        "AGENTS.md",
+        "React",
+        "TypeScript",
+        "Python"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "holision",
+      "url": "https://holision.pages.dev",
+      "description": "Live terrain cut and fill in the browser."
+    },
+    {
+      "name": "splatgpu",
+      "url": "https://splatgpu.pages.dev",
+      "description": "Gaussian splat viewer built from scratch in WebGPU."
+    },
+    {
+      "name": "Projector Wall",
+      "url": "https://projector-wall.pages.dev",
+      "description": "Live audio-reactive projection rig run from a phone."
+    },
+    {
+      "name": "effecx",
+      "url": "https://github.com/arshlibruh-code/effecx",
+      "description": "Real-time WebGPU video effects."
+    },
+    {
+      "name": "MBRT",
+      "url": "https://github.com/arshlibruh-code/MBRT",
+      "description": "Map agents that turn plain English into spatial operations."
+    },
+    {
+      "name": "PointPro",
+      "url": "https://github.com/arshlibruh-code/PointPro",
+      "description": "iOS LiDAR capture app with georeferenced LAZ export."
+    }
+  ]
+}
