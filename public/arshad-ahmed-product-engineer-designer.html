@@ -77,7 +77,7 @@
   .skills-row { margin-bottom: 5px; }
   .skills-row strong { font-size: 11px; color: #888; }
 
-  /* Print — force light for PDF readability */
+  /* Print: force light for PDF readability */
   @media print {
     body { margin: 0; padding: 0; max-width: 100%; font-size: 12px; line-height: 1.4; background: #fff; color: #1a1a1a; }
     section, .entry, .project { break-inside: avoid; }
@@ -103,7 +103,7 @@
 
 <div class="header">
   <h1>Arshad Ahmed</h1>
-  <div class="title">Product Designer &amp; Engineer</div>
+  <div class="title" id="r-title"></div>
   <div class="links">
     <a href="https://arshlibruh-code.github.io" target="_blank" rel="noopener noreferrer">portfolio</a><span>·</span>
     <a href="https://github.com/arshlibruh-code" target="_blank" rel="noopener noreferrer">github.com/arshlibruh-code</a><span>·</span>
@@ -111,120 +111,163 @@
     <a href="mailto:arshlibruh@gmail.com">arshlibruh@gmail.com</a><span>·</span>
     <a href="tel:+918937049848">+91 89370 49848</a>
   </div>
-  <div class="summary">Self-taught product designer and engineer with 5+ years building 3D, geospatial, and real-time web tools. Three.js, WebGL, GLSL shaders, WebGPU, Mapbox/GIS pipelines. I turn complex spatial data into interfaces that ship.</div>
+  <div class="summary" id="r-summary"></div>
 </div>
 
 <section>
   <h2>Skills</h2>
-  <div class="skills-row"><strong>Frontend</strong> &nbsp; React · Three.js · WebGL · MapLibre GL v5+ · Mapbox · WebGPU · GLSL Shaders · GPU Compute · HTML/CSS/JS · GSAP · ScrollTrigger · Vite</div>
-  <div class="skills-row"><strong>Geospatial</strong> &nbsp; GDAL · DXF · LAS/LAZ · Point Clouds · Photogrammetry · Drone Data Pipelines · GeoJSON · ArcGIS · PDAL · CRS / Coordinate Systems · COLMAP</div>
-  <div class="skills-row"><strong>3D &amp; Media</strong> &nbsp; Blender · Three.js · FFmpeg · DaVinci Resolve · gltf-transform (Draco + KTX2)</div>
-  <div class="skills-row"><strong>AI / Agents</strong> &nbsp; ReAct Workflows · Agentic Tool Use · Function Calling · SSE Streaming · LLM Integration · MCP</div>
-  <div class="skills-row"><strong>Backend</strong> &nbsp; Python · FastAPI · uvicorn · Node.js · Bun · SQL · WebSockets · Supabase · numpy · pydantic · trimesh · nginx</div>
-  <div class="skills-row"><strong>Product</strong> &nbsp; Interaction Design · Design Systems · Rapid Prototyping · Data Visualization · User Research</div>
-  <div class="skills-row"><strong>Tools</strong> &nbsp; Figma · Adobe Creative Suite · Cursor · Claude Code · Codex · Git · GitLab · GitHub CLI · Swift</div>
+  <div id="r-skills"></div>
 </section>
 
 <section>
   <h2 style="display:flex; justify-content:space-between; align-items:baseline;">
     <span>Work Experience</span>
-    <span style="font-size:10px; letter-spacing:0.8px; color:#999; font-weight:400; text-transform:none;">PRODUCT: <span id="dur-product"></span> &nbsp;·&nbsp; SALES: <span id="dur-sales"></span> &nbsp;·&nbsp; TOTAL: <span id="dur-total"></span></span>
+    <span style="font-size:10px; letter-spacing:0.8px; color:#999; font-weight:400; text-transform:none;">DESIGN EXPERIENCE: <span id="dur-product"></span></span>
   </h2>
-
-  <div class="entry">
-    <div class="entry-header">
-      <h3>Product Designer &amp; Engineer, Aereo</h3>
-
-      <span class="meta">Nov 2021 – Present · <span id="aereo-duration"></span> · Bengaluru, India</span>
-    </div>
-    <ul>
-      <li>Own and operate an experimental deployment environment for Aereo Cloud (<a href="https://experiments.cloud.aereo.co.in" target="_blank" rel="noopener noreferrer">experiments.cloud.aereo.co.in</a>): first commit alone was 20k+ lines, go/no-go decision framework, beta-validated with users before anything hits the standard sprint.</li>
-      <li>Ran multiple on-site visits with mining and survey teams to understand how work actually happens. Replaced DGPS stockpile walkdowns with drone-based volumetrics processed in the cloud, accurate from the office.</li>
-      <li>Wrote specs for complex geospatial features (point cloud tools, DXF support, terrain analysis) backed by competitive research across Propeller, Strayos, Maptek, and Datamine.</li>
-      <li>Built deep domain expertise in mining workflows: ore body models, drill &amp; blast, stockpile volumes, mine planning software. Enough to drive technical decisions, not just design ones.</li>
-      <li>Took workflows that needed Global Mapper and AutoCAD on expensive hardware and made them run in a browser. Any device, any screen, no setup.</li>
-      <li>Defined interaction models for complex spatial workflows: 3D camera orchestration, underground visualization, multi-step digitization. Implemented as state machines, not just specs.</li>
-      <li>Led Aereo Go research, design, and launch. Replaced printed field maps with live data on the phones operators already carried.</li>
-      <li>Established design system, UX processes, and research practice from zero. Maintained and scaled across 3 simultaneous projects.</li>
-      <li>Collaborated with 20+ engineers, PMs, and data scientists; managed a team of 4+ designers.</li>
-    </ul>
-  </div>
-
-  <div class="entry">
-    <div class="entry-header">
-      <h3>UI/UX Designer, Ignitho Technologies (+1)</h3>
-      <span class="meta">Jan 2021 – Nov 2021 · 11 mos · Bengaluru, India</span>
-    </div>
-    <ul>
-      <li>Delivered development-ready designs for websites, apps, and dashboards across 5+ client projects with global cross-functional teams.</li>
-    </ul>
-  </div>
-
-  <div class="entry">
-    <div class="entry-header">
-      <h3>Key Account Manager, TeamLease Services</h3>
-      <span class="meta">Jan 2020 – Feb 2021 · 1 yr 1 mo · Bengaluru, India</span>
-    </div>
-    <ul>
-      <li>Managed a 20+ client portfolio worth 2M+ INR. Owned client communication, stakeholder alignment, and risk mitigation across accounts.</li>
-    </ul>
-  </div>
+  <div id="r-work"></div>
 </section>
 
 <section>
   <h2>Projects</h2>
-
-  <div class="project">
-    <h3><a href="https://holision.pages.dev" target="_blank" rel="noopener noreferrer">holision</a>: </h3><p>Browser-based terrain cut/fill analysis, live. Three.js + custom GLSL shaders, real elevation (Terrarium tiles) streamed and decoded, ArcGIS satellite overlay, contour and volume compute.</p>
-  </div>
-  <div class="project">
-    <h3><a href="https://github.com/arshlibruh-code/fndash" target="_blank" rel="noopener noreferrer">fndash</a>: </h3><p>Browser-based BI dashboard with a ReAct AI agent (12 tools, SSE streaming). No server, no build step. Drag-and-drop widgets: MapLibre GL maps, D3 charts, KPI cards, CSV tables. ArcGIS basemaps, GeoJSON layers, map sync across panels.</p>
-  </div>
-  <div class="project">
-    <h3><a href="https://github.com/arshlibruh-code/MBRT" target="_blank" rel="noopener noreferrer">MBRT</a>: </h3><p>NLP to 6 specialized map agents. Natural language drives point markers, routes, buffers/geofences, isochrones, polygons, and elevation profiles via Mapbox GL JS + agentic ReAct workflows.</p>
-  </div>
-  <div class="project">
-    <h3><a href="https://github.com/arshlibruh-code/effecx" target="_blank" rel="noopener noreferrer">effecx</a>: </h3><p>WebGPU-native real-time video effects. GPU compute shaders, depth matte styling, shader filters, deterministic CFR export.</p>
-  </div>
-  <div class="project">
-    <h3>stagr: </h3><p>Generative episode pipeline. Three.js/WebGL render layer driving Playwright + FFmpeg 4K export, AI-scripted scenes from a single manifest.</p>
-  </div>
-  <div class="project">
-    <h3>Volt: </h3><p>Real-time procedural terrain engine on WebGPU. GPU compute shaders for simplex noise, FBM, hydraulic erosion, and thermal weathering. All heavy lifting stays on GPU.</p>
-  </div>
+  <div id="r-projects"></div>
 </section>
-
-
-
-<script>
-  function duration(startYear, startMonth, endYear, endMonth) {
-    const end = endYear ? new Date(endYear, endMonth - 1) : new Date();
-    let years = end.getFullYear() - startYear;
-    let months = end.getMonth() + 1 - startMonth;
-    if (months < 0) { years--; months += 12; }
-    const y = years > 0 ? years + ' yr' + (years > 1 ? 's' : '') : '';
-    const m = months > 0 ? months + ' mo' + (months > 1 ? 's' : '') : '';
-    return [y, m].filter(Boolean).join(' ');
-  }
-  document.getElementById('aereo-duration').textContent = duration(2021, 11);
-  document.getElementById('dur-product').textContent = duration(2021, 1);
-  document.getElementById('dur-sales').textContent = duration(2020, 1, 2021, 2);
-  document.getElementById('dur-total').textContent = duration(2020, 1);
-</script>
 
 <section>
   <h2>Education</h2>
-
-  <div class="entry">
-    <div class="entry-header">
-      <h3>MBA, Presidency University</h3>
-      <span class="meta">June 2018 – June 2020 · Bengaluru, India</span>
-    </div>
-    <ul>
-      <li>Marketing &amp; Data Science · 7.12 CGPA · Entrepreneurship competition winner (Supernanny)</li>
-    </ul>
-  </div>
+  <div id="r-edu"></div>
 </section>
+
+<script>
+// ---------------------------------------------------------------- content
+// One source. A lane swaps the top third and the project order, nothing else,
+// because that is all a skimming reader and a keyword search ever consume.
+
+const LINK = (u, t) => '<a href="' + u + '" target="_blank" rel="noopener noreferrer">' + t + '</a>';
+
+const WORK = [
+  { role: 'Product Designer &amp; Engineer, Aereo', from: [2021, 11], where: 'Bengaluru, India', bullets: {
+      lead: 'Own and operate an experimental deployment environment for Aereo Cloud (' + LINK('https://experiments.cloud.aereo.co.in', 'experiments.cloud.aereo.co.in') + '): ideas are prototyped in code on real data, tested with beta users, and pass a go/no-go gate before they reach the standard sprint.',
+      drone: 'Ran multiple on-site visits with mining and survey teams to understand how work actually happens. Replaced DGPS stockpile walkdowns with drone-based volumetrics processed in the cloud, accurate from the office.',
+      browser: 'Took workflows that needed Global Mapper and AutoCAD on expensive hardware and made them run in a browser. Any device, any screen, no setup.',
+      specs: 'Wrote specs for complex geospatial features (point cloud tools, DXF support, terrain analysis) backed by competitive research across Propeller, Strayos, Maptek, and Datamine.',
+      domain: 'Built deep domain expertise in mining workflows: ore body models, drill &amp; blast, stockpile volumes, mine planning software. Enough to drive technical decisions, not just design ones.',
+      state: 'Defined interaction models for complex spatial workflows: 3D camera orchestration, underground visualization, multi-step digitization. Implemented as state machines, not just specs.',
+      go: 'Led Aereo Go research, design, and launch. Replaced printed field maps with live data on the phones operators already carried.',
+      system: 'Established design system, UX processes, and research practice from zero. Maintained and scaled across 3 simultaneous projects.',
+      team: 'Led a small design team of full-time designers and interns, and set how design worked with 20+ engineers, PMs and data scientists: specs, reviews and handoff.',
+  } },
+  { role: 'UI/UX Designer, Ignitho Technologies', from: [2021, 1], to: [2021, 11], where: 'Bengaluru, India',
+    bullets: { only: 'Delivered development-ready designs for websites, apps, and dashboards across 5+ client projects with global cross-functional teams.' } },
+  { role: 'Key Account Manager, TeamLease Services', from: [2020, 1], to: [2021, 1], where: 'Bengaluru, India',
+    bullets: { only: 'Managed a 20+ client portfolio worth 2M+ INR. Owned client communication, stakeholder alignment, and risk mitigation across accounts.' } },
+];
+
+const PROJECTS = {
+  holision: { name: LINK('https://holision.pages.dev', 'holision'), text: 'Browser-based terrain cut/fill analysis, live. Three.js and custom GLSL shaders, real elevation (Terrarium tiles) streamed and decoded, ArcGIS satellite overlay, contour and volume compute.' },
+  fndash:   { name: 'fndash', text: 'Browser-native BI workspace with a 12-tool ReAct agent, tool schemas, SSE streaming, CSV analysis, map and chart actions, and synchronized visual state. No server, no build step.' },
+  mbrt:     { name: LINK('https://github.com/arshlibruh-code/MBRT', 'MBRT'), text: 'Six specialized map agents that translate natural language into executable spatial operations: routes, buffers, geofences, isochrones, polygons, markers, and elevation profiles. Mapbox GL JS and agentic ReAct workflows.' },
+  pointpro: { name: LINK('https://github.com/arshlibruh-code/PointPro', 'PointPro'), text: 'iOS LiDAR capture app: point cloud scanning, cross-section analysis, georeferenced LAZ export, PDF reporting. Swift, on-device.' },
+  effecx:   { name: LINK('https://github.com/arshlibruh-code/effecx', 'effecx'), text: 'WebGPU-native real-time video effects. GPU compute shaders, depth matte styling, shader filters, deterministic CFR export.' },
+  volt:     { name: 'Volt', text: 'Real-time procedural terrain engine on WebGPU. GPU compute shaders for simplex noise, FBM, hydraulic erosion, and thermal weathering. All heavy lifting stays on GPU.' },
+  splatgpu: { name: LINK('https://splatgpu.pages.dev', 'splatgpu'), text: 'Gaussian splat viewer built from scratch in raw WebGPU and TSL, live in the browser: PLY parser, EWA covariance projection, spherical harmonic relighting, field-driven animation. Its O(N) GPU counting sort shipped two months before three.js added one in r186, and resolves 2^20 depth bins against their 4k, with depth bounds recomputed on the GPU every frame.' },
+  projector: { name: LINK('https://projector-wall.pages.dev', 'Projector Wall'), text: 'A live visuals rig I built for house parties. A webcam and mic drive eight WebGL scenes on a wall, run from a phone over WebSockets, with motion tracking, an auto-VJ that hears the drops, and a page guests can play with.' },
+};
+
+const LANES = {
+  // THREE LANES (2026-10-11), one per lane of the search plan in data.js
+  // workflow.search. Company-tailored versions are not kept here: what each
+  // company received is the PDF in sent/. Building is framed as it really
+  // happens: he directs AI agents and owns architecture, specs and review; he
+  // does not hand-write TypeScript or React, so the stack is never the headline.
+  main: {
+    title: 'Design Engineer, Spatial and 3D Tools',
+    summary: 'I design spatial tools and build them, down to the renderer, by directing AI agents: I own the architecture, the specs and the review, and the agents write the code. Nearly five years on a production web-GIS platform for mining and drone survey: point clouds, terrain, digitization and annotation workflows, and the design system and research practice I set up from zero. On my own time I build rendering engines from the GPU up the same way, including a Gaussian splat viewer in raw WebGPU with an O(N) counting sort over 2^20 depth bins, and a terrain viewer that computes cut and fill live in the browser.',
+    skills: [
+      ['Spatial &amp; 3D', 'WebGPU &middot; WebGL &middot; Three.js &middot; GLSL shaders &middot; GPU compute &middot; Gaussian splatting &middot; MapLibre GL &middot; Mapbox GL &middot; Point clouds &middot; LAS/LAZ &middot; Terrain analysis &middot; CRS and coordinate systems'],
+      ['Design', 'Product and interaction design &middot; Design systems (tokens, components, adoption) &middot; Field research &middot; Data-dense tools &middot; Spatial workflow modelling &middot; Prototyping on real data &middot; Figma'],
+      ['Building with agents', 'Claude Code and Codex as the daily method &middot; Architecture and specs &middot; Agent review and steering &middot; AGENTS.md and context architecture &middot; Shipped in React, TypeScript, Three.js, WebGPU and Python'],
+    ],
+    bullets: ['browser', 'system', 'state', 'drone', 'lead', 'specs', 'domain', 'go', 'team'],
+    projects: ['holision', 'splatgpu', 'projector', 'pointpro', 'mbrt', 'fndash'],
+  },
+  design: {
+    title: 'Senior Product Designer, Spatial and Data Tools',
+    summary: 'Product designer who ships the working tool, not just the mock. Nearly five years on a production web-GIS platform for mining and drone survey, where the users are technical specialists and the interface is structured data: point clouds, digitization and annotation, terrain, coordinate systems. I built the design system and research practice there from zero and scaled both across three products and 20+ engineers. I prototype on real data in code, built by directing AI agents, rather than in static mocks.',
+    skills: [
+      ['Design', 'Design systems (tokens, components, documentation, adoption) &middot; Interaction design &middot; Cross-tool workflow modelling &middot; Field research and shadowing &middot; Data-dense tables, filters and dashboards &middot; Spatial and 3D interaction models &middot; Figma'],
+      ['Domain', 'Map annotation and digitization &middot; Point clouds &middot; Drone survey &middot; Terrain analysis &middot; Internal and developer tooling &middot; Mining and field operations'],
+      ['Building with agents', 'Claude Code and Codex as the daily method &middot; Prototyping in code on real data &middot; AGENTS.md and context architecture &middot; Shipped in React, TypeScript, Three.js, WebGPU and MapLibre GL'],
+    ],
+    bullets: ['system', 'drone', 'state', 'specs', 'lead', 'browser', 'domain', 'go', 'team'],
+    projects: ['holision', 'projector', 'fndash', 'mbrt', 'pointpro', 'splatgpu'],
+  },
+  creative: {
+    title: 'Creative Technologist',
+    summary: 'Product designer who builds realtime graphics by directing AI agents. A live audio-reactive projection rig run from a phone, a WebGPU video effects studio with deterministic export, and a Gaussian splat viewer built from the PLY parser up. The day job is a production web-GIS platform, so browser 3D is daily work, not a hobby.',
+    skills: [
+      ['Realtime', 'Three.js &middot; WebGPU &middot; WebGL &middot; GLSL shaders &middot; GPU compute &middot; TSL &middot; Web Audio &middot; Gaussian splatting &middot; Procedural terrain'],
+      ['Motion &amp; media', 'GSAP &middot; ScrollTrigger &middot; Lenis &middot; FFmpeg &middot; Blender &middot; gltf-transform (Draco + KTX2) &middot; DaVinci Resolve &middot; TouchDesigner &middot; Deterministic CFR export'],
+      ['Building with agents', 'Claude Code and Codex as the daily method &middot; Interaction design &middot; Design systems &middot; Rapid prototyping &middot; Shipped in React, TypeScript, Python and MapLibre GL'],
+    ],
+    bullets: ['state', 'browser', 'system', 'go', 'lead', 'team'],
+    projects: ['projector', 'effecx', 'splatgpu', 'holision', 'volt', 'mbrt'],
+  },
+};
+
+// ---------------------------------------------------------------- render
+
+function duration(startYear, startMonth, endYear, endMonth) {
+  const end = endYear ? new Date(endYear, endMonth - 1) : new Date();
+  let years = end.getFullYear() - startYear;
+  let months = end.getMonth() + 1 - startMonth;
+  if (months < 0) { years--; months += 12; }
+  const y = years > 0 ? years + ' yr' + (years > 1 ? 's' : '') : '';
+  const m = months > 0 ? months + ' mo' + (months > 1 ? 's' : '') : '';
+  return [y, m].filter(Boolean).join(' ');
+}
+
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function render() {
+  const key = (location.hash || '#main').slice(1);
+  const lane = LANES[key] || LANES.main;
+
+  document.title = 'Arshad Ahmed, ' + lane.title;
+  document.getElementById('r-title').textContent = lane.title;
+  document.getElementById('r-summary').textContent = lane.summary;
+
+  document.getElementById('r-skills').innerHTML = lane.skills.map(
+    r => '<div class="skills-row"><strong>' + r[0] + '</strong> &nbsp; ' + r[1] + '</div>'
+  ).join('');
+
+  document.getElementById('r-work').innerHTML = WORK.map(w => {
+    const span = w.to ? duration(w.from[0], w.from[1], w.to[0], w.to[1]) : duration(w.from[0], w.from[1]);
+    const range = MON[w.from[1] - 1] + ' ' + w.from[0] + ' – ' +
+                  (w.to ? MON[w.to[1] - 1] + ' ' + w.to[0] : 'Present');
+    const keys = w.bullets.only ? ['only'] : lane.bullets.filter(k => w.bullets[k]);
+    return '<div class="entry"><div class="entry-header"><h3>' + w.role + '</h3>' +
+      '<span class="meta">' + range + ' · ' + span + ' · ' + w.where + '</span></div><ul>' +
+      keys.map(k => '<li>' + w.bullets[k] + '</li>').join('') + '</ul></div>';
+  }).join('');
+
+  document.getElementById('r-projects').innerHTML = lane.projects.map(k => {
+    const p = PROJECTS[k];
+    return '<div class="project"><h3>' + p.name + ': </h3><p>' + p.text + '</p></div>';
+  }).join('');
+
+  document.getElementById('r-edu').innerHTML =
+    '<div class="entry"><div class="entry-header"><h3>MBA, Presidency University</h3>' +
+    '<span class="meta">June 2018 – June 2020 · Bengaluru, India</span></div>' +
+    '<ul><li>Marketing and Data Science · Entrepreneurship competition winner (Supernanny)</li></ul></div>' +
+    '<div class="entry"><div class="entry-header"><h3>B.Com, HNB Garhwal University (Doon Business School)</h3>' +
+    '<span class="meta">2015 – 2018 · Dehradun, India</span></div></div>';
+
+  document.getElementById('dur-product').textContent = duration(2021, 1);
+}
+
+addEventListener('hashchange', render);
+render();
+</script>
 
 </body>
 </html>
