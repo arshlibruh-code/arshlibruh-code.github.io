@@ -306,8 +306,17 @@ const projectsData = [
         coords: [74.84063987209015, 12.811350045276598]
     },
     {
-        id: 'project-d',
+        id: 'project-g',
         markerLabel: '02',
+        title: 'AI TEAMMATE',
+        description: 'An AI teammate our developers are piloting. Hand it a Jira ticket in Slack: it asks before it assumes, writes the analysis, opens the merge requests, and stops at two human review gates. It never merges.',
+        image: '/ai-teammate.webp',
+        focusTags: ['AI', 'WORKFLOW', 'HUMAN IN THE LOOP'],
+        coords: [74.81237025960675, 12.896946186306437]
+    },
+    {
+        id: 'project-d',
+        markerLabel: '03',
         title: 'HOLISION',
         imagePosition: 'center bottom',
         description: 'Live terrain cut and fill in the browser. Real elevation tiles streamed and decoded, custom GLSL shaders, contours and volumes computed as you work.',
@@ -315,11 +324,11 @@ const projectsData = [
         linkUrl: 'https://holision.pages.dev',
         linkLabel: 'VIEW LIVE',
         focusTags: ['TERRAIN', 'THREE.JS', 'GLSL'],
-        coords: [74.81237025960675, 12.896946186306437]
+        coords: [74.79382795128464, 12.985018764409375]
     },
     {
         id: 'project-c',
-        markerLabel: '03',
+        markerLabel: '04',
         title: 'MBRT',
         imagePosition: 'center bottom',
         description: 'NLP to 6 specialized map agents. Natural language drives routes, isochrones, buffers, polygons, and elevation profiles, all live in Mapbox.',
@@ -327,18 +336,18 @@ const projectsData = [
         linkUrl: 'https://github.com/arshlibruh-code/MBRT',
         linkLabel: 'VIEW ON GITHUB',
         focusTags: ['AI', 'MAPS', 'NLP'],
-        coords: [74.79382795128464, 12.985018764409375]
+        coords: [74.77493613634593, 13.073059748410813]
     },
     {
         id: 'project-a',
-        markerLabel: '04',
+        markerLabel: '05',
         title: 'This Portfolio',
         description: 'A spatial portfolio experience built around story, interaction, and camera choreography to showcase my journey and projects.',
         image: '/portfolio-card.webp',
         linkLabel: 'CURRENTLY VIEWING',
         linkBehavior: 'here',
         focusTags: ['UX', 'INTERACTION', 'MAPS', '3D'],
-        coords: [74.77493613634593, 13.073059748410813]
+        coords: [74.75505299252845, 13.160927390140543]
     }
 ];
 
