@@ -1,6 +1,6 @@
 // Text animation function
 
-export function typewriterRandom(element, text, speed = 20) {
+export function typewriterRandom(element, text, speed = 20, onDone) {
     const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%@!?';
     let currentIndex = 0;
     let displayText = '';
@@ -19,6 +19,8 @@ export function typewriterRandom(element, text, speed = 20) {
                 currentIndex++;
                 typeNextChar();
             }, speed);
+        } else if (onDone) {
+            onDone();
         }
     }
     

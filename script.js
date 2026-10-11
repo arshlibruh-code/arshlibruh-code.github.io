@@ -361,11 +361,11 @@ const projectsData = [
 ];
 
 const dynamicTexts = [
-    'I design tools for people who work with maps, 3D and data.',
+    'I design tools for maps, 3D and data.',
     'I make maps do things they weren\'t supposed to.',
-    'product design × geospatial × whatever\'s interesting.',
+    'product design ✽ geospatial ✽ whatever\'s interesting.',
     'I start where the work happens, not on a screen.',
-    'I design how teams work with AI, and where the human stays in control.',
+    'Where the human stays in control.',
 ];
 let currentTextIndex = 0;
 
@@ -1988,7 +1988,43 @@ function updateJourneyText(description) {
     taglineElement.style.opacity = '';
     taglineElement.style.transform = '';
     taglineElement.style.filter = '';
-    typewriterRandom(taglineElement, description, 10);
+    typewriterRandom(taglineElement, description, 10, () => decorateSparks(taglineElement));
+}
+
+// The ✽ in a tagline becomes Claude Code's spinner: · ✢ ✳ ✶ ✻ ✽ and back.
+// U+FE0E keeps ✳ a text glyph instead of an emoji on iOS.
+const SPARK_FRAMES = ['·', '✢', '✳', '✶', '✻', '✽'].map((g) => g + '\uFE0E');
+const SPARK_SEQUENCE = [...SPARK_FRAMES, ...SPARK_FRAMES.slice(1, -1).reverse()];
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let sparkTick = 0;
+
+function decorateSparks(element) {
+    const text = element.textContent;
+    if (!text.includes('✽')) {
+        return;
+    }
+    const escape = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    let phase = 0;
+    element.innerHTML = text.split('✽').map(escape).join('\u0000').replace(/\u0000/g, () => {
+        const span = `<span class="spark" data-phase="${phase}">✽\uFE0E</span>`;
+        phase += Math.floor(SPARK_SEQUENCE.length / 2);
+        return span;
+    });
+}
+
+if (!prefersReducedMotion) {
+    setInterval(() => {
+        sparkTick++;
+        document.querySelectorAll('.spark').forEach((el) => {
+            const phase = Number(el.dataset.phase) || 0;
+            el.textContent = SPARK_SEQUENCE[(sparkTick + phase) % SPARK_SEQUENCE.length];
+        });
+    }, 120);
+
+    const grainNoise = document.getElementById('film-grain-noise');
+    if (grainNoise) {
+        setInterval(() => grainNoise.setAttribute('seed', String(Math.floor(Math.random() * 1000))), 83);
+    }
 }
 
 function updateJourneyDate(date) {
