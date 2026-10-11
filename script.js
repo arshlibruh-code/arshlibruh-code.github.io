@@ -3280,8 +3280,10 @@ function startAutoCountdown() {
         clearInterval(autoCountdownTimer);
         autoCountdownTimer = null;
         autoProjectsDone = true;
-        gtag('event', 'auto_projects');
         enterProjectsMode();
+        if (typeof gtag === 'function') {
+            gtag('event', 'auto_projects');
+        }
     }, 1000);
 }
 
