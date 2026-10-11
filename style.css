@@ -1113,3 +1113,20 @@ body {
     opacity: 1;
 }
 
+
+/* Soft blur under the bottom corners so the labels and icons read over the map; it
+   fades out upward instead of ending in a hard edge */
+.bottom-fade {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(64px + env(safe-area-inset-bottom, 0px));
+    pointer-events: none;
+    z-index: 999;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    -webkit-mask-image: linear-gradient(to top, #000 45%, transparent);
+    mask-image: linear-gradient(to top, #000 45%, transparent);
+}
