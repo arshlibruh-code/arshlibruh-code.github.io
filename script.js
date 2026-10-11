@@ -352,8 +352,20 @@ const projectsData = [
         coords: [74.79382795128464, 12.985018764409375]
     },
     {
-        id: 'project-c',
+        id: 'project-h',
         markerLabel: '04',
+        title: 'SPLATGPU',
+        description: 'A Gaussian splat viewer built from scratch in raw WebGPU. Its GPU sort resolves 2^20 depth bins, and it shipped two months before three.js added one.',
+        image: '/splatgpu.webp',
+        video: '/splatgpu.mp4',
+        linkUrl: 'https://splatgpu.pages.dev',
+        linkLabel: 'VIEW LIVE',
+        focusTags: ['WEBGPU', 'GAUSSIAN SPLATS', '3D'],
+        coords: [74.77493613634593, 13.073059748410813]
+    },
+    {
+        id: 'project-c',
+        markerLabel: '05',
         title: 'MBRT',
         imagePosition: 'center bottom',
         description: 'NLP to 6 specialized map agents. Natural language drives routes, isochrones, buffers, polygons, and elevation profiles, all live in Mapbox.',
@@ -361,18 +373,30 @@ const projectsData = [
         linkUrl: 'https://github.com/arshlibruh-code/MBRT',
         linkLabel: 'VIEW ON GITHUB',
         focusTags: ['AI', 'MAPS', 'NLP'],
-        coords: [74.77493613634593, 13.073059748410813]
+        coords: [74.75505299252845, 13.160927390140543]
+    },
+    {
+        id: 'project-i',
+        markerLabel: '06',
+        title: 'PROJECTOR WALL',
+        description: 'A live visuals rig I built for house parties. The camera and the sound in the room drive the scenes on a wall, run from a phone.',
+        image: '/projector-wall.webp',
+        video: '/projector-wall.mp4',
+        linkUrl: 'https://projector-wall.pages.dev',
+        linkLabel: 'VIEW LIVE',
+        focusTags: ['LIVE VISUALS', 'WEBGL', 'AUDIO'],
+        coords: [74.73175275237745, 13.247902636130817]
     },
     {
         id: 'project-a',
-        markerLabel: '05',
+        markerLabel: '07',
         title: 'This Portfolio',
         description: 'A spatial portfolio experience built around story, interaction, and camera choreography to showcase my journey and projects.',
         image: '/portfolio-card.webp',
         linkLabel: 'CURRENTLY VIEWING',
         linkBehavior: 'here',
         focusTags: ['UX', 'INTERACTION', 'MAPS', '3D'],
-        coords: [74.75505299252845, 13.160927390140543]
+        coords: [74.708, 13.335]
     }
 ];
 
