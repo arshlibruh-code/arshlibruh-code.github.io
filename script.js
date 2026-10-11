@@ -5,7 +5,6 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { createRadarChart } from './three-objects.js';
 import { typewriterRandom } from './text-animations.js';
-import { initIntroOverlay, isOverlayActive } from './intro-overlay.js';
 
 const APP_MODES = {
     IDLE: 'IDLE',
@@ -2468,7 +2467,7 @@ function handleUserInteraction() {
 }
 
 function checkAndStartTextRotation() {
-    if (isJourneyActive || appMode === APP_MODES.PROJECTS_MODE) { // isOverlayActive() skipped — overlay disabled
+    if (isJourneyActive || appMode === APP_MODES.PROJECTS_MODE) {
         return;
     }
 
@@ -3225,21 +3224,6 @@ map.on('load', () => {
 
     document.addEventListener('mousedown', () => handleUserInteraction());
     document.addEventListener('click', () => handleUserInteraction());
-    
-    // intro overlay disabled — preserved for later
-    // initIntroOverlay({
-    //     onFlyTo: () => {
-    //         map.flyTo({
-    //             center: textCoords,
-    //             zoom: 9.5,
-    //             bearing: 10,
-    //             pitch: 30,
-    //             duration: 3000
-    //         });
-    //         currentTextIndex = 0;
-    //         updateJourneyText(dynamicTexts[0]);
-    //     }
-    // });
 
     map.flyTo({
         center: textCoords,
