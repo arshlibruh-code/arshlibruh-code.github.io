@@ -2537,7 +2537,7 @@ const skills = [
     { name: 'DESIGN', level: 95 },
     { name: 'CODE', level: 55 },
     { name: 'MAPS', level: 90 },
-    { name: 'FILM', level: 65 },
+    { name: 'FILM', level: 85 },
     { name: '3D/GPU', level: 85 },
     { name: 'AI', level: 80 }
 ];
