@@ -742,11 +742,12 @@ function resolveJourneyImage(point) {
 function createPopupCard(data, options = {}) {
     const {
         showCloseButton = false,
-        onRequestClose = null
+        onRequestClose = null,
+        variant = ''
     } = options;
 
     const card = document.createElement('article');
-    card.className = 'info-popup-card';
+    card.className = variant ? `info-popup-card is-${variant}` : 'info-popup-card';
 
     if (showCloseButton) {
         const closeButton = document.createElement('button');
@@ -1425,6 +1426,7 @@ function openProjectPopup(project, options = {}) {
 
     let popup = null;
     const content = createPopupCard(project, {
+        variant: 'project',
         showCloseButton: true,
         onRequestClose: () => {
             if (popup) {

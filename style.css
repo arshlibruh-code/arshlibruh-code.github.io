@@ -1120,6 +1120,32 @@ body {
     text-decoration: none;
 }
 
+/* Project cards share one height: fixed body, one-line tags, description clamped
+   to four lines, the link pinned to the bottom */
+.info-popup-card.is-project .info-popup-body {
+    height: 150px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-popup-card.is-project .info-popup-meta {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.info-popup-card.is-project .info-popup-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.info-popup-card.is-project .info-popup-link {
+    margin-top: auto;
+}
+
 .info-popup-link:hover {
     color: #089BDF;
 }
@@ -1140,6 +1166,10 @@ body {
 
     .info-popup-body {
         padding: 10px;
+    }
+
+    .info-popup-card.is-project .info-popup-body {
+        height: 140px;
     }
 
     .info-popup-title {
