@@ -2775,37 +2775,43 @@ const text3DLayer = {
             
             // Inter Tight, set letter by letter so it can be tracked tight like the tagline
             // (TextGeometry has no letter-spacing of its own)
-            const tracking = -0.04 * fontSize;
-            const wordSpacing = 0.8 * fontSize;
-            const unitsToSize = fontSize / font.data.resolution;
             const lineSpacing = fontSize * lineHeight;
             const totalHeight = (lines.length - 1) * lineSpacing;
 
-            lines.forEach((line, index) => {
+            // One centred line of tracked letters at any size (the countdown reuses it)
+            this.buildLine = (line, size, front = frontMaterial, side = sideMaterial) => {
                 const lineGroup = new THREE.Group();
+                const lineTracking = -0.04 * size;
+                const lineWordSpacing = 0.8 * size;
+                const lineUnits = size / font.data.resolution;
                 let cursor = 0;
                 for (const char of line) {
                     const glyph = font.data.glyphs[char];
-                    const advance = (glyph ? glyph.ha : font.data.resolution * 0.3) * unitsToSize;
+                    const advance = (glyph ? glyph.ha : font.data.resolution * 0.3) * lineUnits;
                     if (char !== ' ' && glyph) {
                         const geometry = new TextGeometry(char, {
                             font: font,
-                            size: fontSize,
+                            size: size,
                             height: 0.015,
                             bevelEnabled: true,
                             bevelThickness: 0.01,
                             bevelSize: 0.006,
                             bevelSegments: 3
                         });
-                        const mesh = new THREE.Mesh(geometry, [frontMaterial.clone(), sideMaterial.clone()]);
+                        const mesh = new THREE.Mesh(geometry, [front.clone(), side.clone()]);
                         mesh.position.x = cursor;
                         lineGroup.add(mesh);
                     }
-                    // words open up by half an em, matching the tagline's word-spacing: 0.5em
-                    cursor += advance + tracking + (char === ' ' ? wordSpacing : 0);
+                    // words open up, matching the tagline's wide word-spacing
+                    cursor += advance + lineTracking + (char === ' ' ? lineWordSpacing : 0);
                 }
-                const lineWidth = cursor - tracking;
+                const lineWidth = cursor - lineTracking;
                 lineGroup.children.forEach((mesh) => { mesh.position.x -= lineWidth / 2; });
+                return lineGroup;
+            };
+
+            lines.forEach((line, index) => {
+                const lineGroup = this.buildLine(line, fontSize);
                 lineGroup.position.y = (lines.length - 1 - index) * lineSpacing - totalHeight / 2;
                 this.textGroup.add(lineGroup);
             });
@@ -2834,6 +2840,30 @@ const text3DLayer = {
         this.map = map;
     },
     
+    // 3D countdown under the buttons ("TAKING YOU TO PROJECTS IN" / "5"). Numbers cut, no
+    // animation. Same tracked Inter Tight and icy white as the hello.
+    setCountdown(text) {
+        if (!this.textGroup || !this.buildLine) {
+            return;
+        }
+        if (this.countdownGroup) {
+            this.textGroup.remove(this.countdownGroup);
+            this.countdownGroup = null;
+        }
+        if (!text) {
+            return;
+        }
+        // two lines: a small caption, the number big underneath
+        const [caption, number] = text;
+        this.countdownGroup = new THREE.Group();
+        const captionLine = this.buildLine(caption, 0.2);
+        const numberLine = this.buildLine(number, 0.6);
+        numberLine.position.y = -0.75;
+        this.countdownGroup.add(captionLine, numberLine);
+        this.countdownGroup.position.y = -2.75;
+        this.textGroup.add(this.countdownGroup);
+    },
+
     render(gl, args) {
         // Animate rect area light position
         if (this.rectAreaLight) {
@@ -3355,6 +3385,7 @@ function cancelAutoCountdown() {
         clearInterval(autoCountdownTimer);
         autoCountdownTimer = null;
         updateJourneyButtonText();
+        text3DLayer.setCountdown(null);
     }
 }
 
@@ -3364,7 +3395,10 @@ function startAutoCountdown() {
         return;
     }
     let remaining = 5;
-    const show = () => { button.textContent = `PROJECTS IN ${remaining}`; };
+    const show = () => {
+        button.textContent = `PROJECTS IN ${remaining}`;
+        text3DLayer.setCountdown(['TAKING YOU TO PROJECTS IN', String(remaining)]);
+    };
     show();
     autoCountdownTimer = setInterval(() => {
         remaining--;
@@ -3375,6 +3409,7 @@ function startAutoCountdown() {
         clearInterval(autoCountdownTimer);
         autoCountdownTimer = null;
         autoProjectsDone = true;
+        text3DLayer.setCountdown(null);
         enterProjectsMode();
         if (typeof gtag === 'function') {
             gtag('event', 'auto_projects');
@@ -3627,6 +3662,7 @@ const projectBuffers = {
         draw();
     },
 
+    // On exit the outline retracts back along its own path while the glow and labels fade
     hide() {
         if (!this.shown) {
             return;
@@ -3637,11 +3673,26 @@ const projectBuffers = {
         clearInterval(this.march);
         this.labels.forEach((label) => {
             label.getElement().classList.remove('is-visible');
-            label.remove();
+            setTimeout(() => { if (!this.shown) label.remove(); }, 600);
         });
-        ['project-buffers-fill', 'project-buffers-rim', 'project-buffers-line'].forEach((id) => map.setLayoutProperty(id, 'visibility', 'none'));
         map.setPaintProperty('project-buffers-fill', 'fill-opacity', 0);
         map.setPaintProperty('project-buffers-rim', 'line-opacity', 0);
-        map.getSource('project-buffers').setData(this.data(0));
+        const source = map.getSource('project-buffers');
+        const start = performance.now();
+        const undrawMs = prefersReducedMotion ? 0 : 800;
+        const undraw = () => {
+            if (this.shown) {
+                return;
+            }
+            const t = undrawMs ? Math.min(1, (performance.now() - start) / undrawMs) : 1;
+            source.setData(this.data(Math.max(0, 1 - t * t * t) * 0.999));
+            if (t < 1) {
+                requestAnimationFrame(undraw);
+                return;
+            }
+            source.setData(this.data(0));
+            ['project-buffers-fill', 'project-buffers-rim', 'project-buffers-line'].forEach((id) => map.setLayoutProperty(id, 'visibility', 'none'));
+        };
+        undraw();
     }
 };
