@@ -94,6 +94,17 @@ const map = new maplibregl.Map({
     }
 });
 
+// The 3D hello block is about 7.25 model units wide (36 km at 5000 m per unit). A fixed
+// zoom clips it on narrow phones, so the landing zoom is fitted to the screen width.
+const INTRO_CONTENT_METERS = 7.25 * 5000;
+function introZoom(preferred) {
+    const lat = 12.48 * Math.PI / 180;
+    // the camera is pitched and turned, so the near edge reads wider than a top-down fit
+    const usable = window.innerWidth * 0.64;
+    const fit = Math.log2((usable * 40075016.686 * Math.cos(lat)) / (512 * INTRO_CONTENT_METERS));
+    return Math.min(preferred, fit);
+}
+
 // True when a coordinate is near the visible map, so off-screen 3D can stop animating
 function isOnScreen(lngLat, margin = 200) {
     const point = map.project(lngLat);
@@ -2412,7 +2423,7 @@ function startJourney() {
             gtag('event', 'journey_completed');
             map.flyTo({
                 center: textCoords,
-                zoom: 10,
+                zoom: introZoom(10),
                 bearing: 10,
                 pitch: 30,
                 duration: 2000
@@ -2488,7 +2499,7 @@ function stopJourney(options = {}) {
     if (flyToIntro) {
         map.flyTo({
             center: textCoords,
-            zoom: 10,
+            zoom: introZoom(10),
             bearing: 10,
             pitch: 30,
             duration: 3000
@@ -2602,7 +2613,7 @@ function exitProjectsMode(options = {}) {
     if (flyToIntro) {
         map.flyTo({
             center: textCoords,
-            zoom: 9.5,
+            zoom: introZoom(9.5),
             bearing: 10,
             pitch: 30,
             duration: 1800
@@ -3365,6 +3376,7 @@ map.on('style.load', () => {
     map.addLayer(text3DLayer);
     map.addLayer(buttons3DLayer);
     projectBuffers.addLayers();
+    map.addLayer(glassRail);
 });
 
 map.on('load', () => {
@@ -3382,7 +3394,7 @@ map.on('load', () => {
 
     map.flyTo({
         center: textCoords,
-        zoom: 9.5,
+        zoom: introZoom(9.5),
         bearing: 10,
         pitch: 30,
         duration: 3000
@@ -3739,5 +3751,188 @@ const projectBuffers = {
             ['project-buffers-fill', 'project-buffers-rim', 'project-buffers-line'].forEach((id) => map.setLayoutProperty(id, 'visibility', 'none'));
         };
         undraw();
+    }
+};
+
+// Glass rail: real refraction for the bottom pill, drawn inside the map's own WebGL pass.
+// After the map draws, the pixels behind the pill are copied to a texture and redrawn
+// through a lens: content bends toward the rounded edge with a slight colour fringe, a
+// soft frost, and a specular rim lit from the top left. Works in Safari, where SVG
+// backdrop refraction does not. It costs nothing while the map is idle, because the map
+// (and so the glass) only redraws when something moves.
+// The same pass samples the map's top edge once the camera settles and hands that colour
+// to a 1px fixed strip, which Safari copies into the status bar.
+const glassRail = {
+    id: 'glass-rail',
+    type: 'custom',
+    renderingMode: '2d',
+
+    onAdd(mapInstance, gl) {
+        this.map = mapInstance;
+        this.target = document.querySelector('.journey-button-wrapper');
+        this.statusStrip = document.querySelector('.status-tint');
+        const vs = `
+            attribute vec2 aPos;
+            uniform vec4 uRect;
+            uniform vec2 uFb;
+            void main() {
+                vec2 px = uRect.xy + aPos * uRect.zw;
+                gl_Position = vec4(px / uFb * 2.0 - 1.0, 0.0, 1.0);
+            }`;
+        const fs = `
+            precision highp float;
+            uniform sampler2D uTex;
+            uniform vec4 uRect;
+            uniform vec4 uSrc;
+            uniform float uDpr;
+            float sdPill(vec2 p, vec2 b, float r) {
+                vec2 q = abs(p) - b + r;
+                return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
+            }
+            vec4 tap(vec2 fb) {
+                return texture2D(uTex, clamp((fb - uSrc.xy) / uSrc.zw, 0.0, 1.0));
+            }
+            void main() {
+                vec2 c = uRect.xy + uRect.zw * 0.5;
+                vec2 p = gl_FragCoord.xy - c;
+                vec2 b = uRect.zw * 0.5;
+                float r = b.y;
+                float d = sdPill(p, b, r);
+                float mask = 1.0 - smoothstep(-uDpr, 0.0, d);
+                if (mask <= 0.0) discard;
+                vec2 n = normalize(vec2(
+                    sdPill(p + vec2(1.0, 0.0), b, r) - sdPill(p - vec2(1.0, 0.0), b, r),
+                    sdPill(p + vec2(0.0, 1.0), b, r) - sdPill(p - vec2(0.0, 1.0), b, r)) + 1e-5);
+                // 0 in the flat middle, 1 at the rim: the lens only bends near the edge
+                float t = clamp(1.0 + d / (min(b.y, 16.0 * uDpr)), 0.0, 1.0);
+                float bend = t * t * t;
+                vec2 disp = -n * bend * 24.0 * uDpr;
+                vec2 base = c + p * 0.93;
+                vec3 col = vec3(0.0);
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        vec2 o = vec2(float(i), float(j)) * 0.7 * uDpr;
+                        col.r += tap(base + o + disp * 1.18).r;
+                        col.g += tap(base + o + disp).g;
+                        col.b += tap(base + o + disp * 0.82).b;
+                    }
+                }
+                col /= 9.0;
+                col = mix(col, vec3(0.04, 0.06, 0.09), 0.16);
+                float rim = smoothstep(-2.5 * uDpr, 0.0, d);
+                float facing = 0.5 + 0.5 * dot(n, normalize(vec2(-0.35, 1.0)));
+                col += vec3(1.0) * rim * facing * 0.5;
+                col += vec3(1.0) * bend * 0.06;
+                gl_FragColor = vec4(col, mask);
+            }`;
+        const compile = (type, src) => {
+            const sh = gl.createShader(type);
+            gl.shaderSource(sh, src);
+            gl.compileShader(sh);
+            if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+                throw new Error(gl.getShaderInfoLog(sh));
+            }
+            return sh;
+        };
+        try {
+            const program = gl.createProgram();
+            gl.attachShader(program, compile(gl.VERTEX_SHADER, vs));
+            gl.attachShader(program, compile(gl.FRAGMENT_SHADER, fs));
+            gl.linkProgram(program);
+            if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+                throw new Error(gl.getProgramInfoLog(program));
+            }
+            this.program = program;
+            this.loc = {
+                aPos: gl.getAttribLocation(program, 'aPos'),
+                uRect: gl.getUniformLocation(program, 'uRect'),
+                uFb: gl.getUniformLocation(program, 'uFb'),
+                uSrc: gl.getUniformLocation(program, 'uSrc'),
+                uDpr: gl.getUniformLocation(program, 'uDpr'),
+                uTex: gl.getUniformLocation(program, 'uTex')
+            };
+            this.quad = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.quad);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
+            this.texture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            document.body.classList.add('has-glass');
+        } catch (e) {
+            console.warn('glass rail off:', e.message);
+            this.program = null;
+        }
+        // the pill can change size (MOVE TO STAY, project mode text), so redraw then
+        if (this.target && 'ResizeObserver' in window) {
+            new ResizeObserver(() => mapInstance.triggerRepaint()).observe(this.target);
+        }
+        window.addEventListener('resize', () => mapInstance.triggerRepaint());
+        mapInstance.on('idle', () => { this.sampleTop = true; mapInstance.triggerRepaint(); });
+    },
+
+    render(gl) {
+        const canvas = this.map.getCanvas();
+        const dpr = this.map.getPixelRatio();
+        const fbW = gl.drawingBufferWidth;
+        const fbH = gl.drawingBufferHeight;
+        const cr = canvas.getBoundingClientRect();
+
+        // status bar colour: the average of the map's top edge, once the camera settles
+        if (this.sampleTop && this.statusStrip) {
+            this.sampleTop = false;
+            const px = new Uint8Array(4 * 16);
+            let rr = 0, gg = 0, bb = 0;
+            for (let i = 0; i < 16; i++) {
+                gl.readPixels(Math.floor((i + 0.5) * fbW / 16), fbH - 2, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px.subarray(i * 4, i * 4 + 4));
+                rr += px[i * 4]; gg += px[i * 4 + 1]; bb += px[i * 4 + 2];
+            }
+            const avg = [rr / 16, gg / 16, bb / 16].map(Math.round);
+            // a pitched camera can show black sky at the top; never hand Safari pure black
+            const luma = (0.2126 * avg[0] + 0.7152 * avg[1] + 0.0722 * avg[2]) / 255;
+            this.statusStrip.style.backgroundColor = luma < 0.06 ? '#132230' : `rgb(${avg.join(', ')})`;
+        }
+
+        if (!this.program || !this.target) {
+            return;
+        }
+        const r = this.target.getBoundingClientRect();
+        if (r.width === 0 || r.height === 0) {
+            return;
+        }
+        const x = (r.left - cr.left) * dpr;
+        const y = fbH - (r.bottom - cr.top) * dpr;
+        const w = r.width * dpr;
+        const h = r.height * dpr;
+        const m = 24 * dpr;
+        const sx = Math.max(0, Math.floor(x - m));
+        const sy = Math.max(0, Math.floor(y - m));
+        const sw = Math.min(fbW - sx, Math.ceil(w + 2 * m));
+        const sh = Math.min(fbH - sy, Math.ceil(h + 2 * m));
+        if (sw <= 0 || sh <= 0) {
+            return;
+        }
+
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, sx, sy, sw, sh, 0);
+
+        gl.useProgram(this.program);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.quad);
+        gl.enableVertexAttribArray(this.loc.aPos);
+        gl.vertexAttribPointer(this.loc.aPos, 2, gl.FLOAT, false, 0, 0);
+        gl.uniform4f(this.loc.uRect, x, y, w, h);
+        gl.uniform2f(this.loc.uFb, fbW, fbH);
+        gl.uniform4f(this.loc.uSrc, sx, sy, sw, sh);
+        gl.uniform1f(this.loc.uDpr, dpr);
+        gl.uniform1i(this.loc.uTex, 0);
+        gl.disable(gl.DEPTH_TEST);
+        gl.disable(gl.STENCIL_TEST);
+        gl.disable(gl.CULL_FACE);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
 };
