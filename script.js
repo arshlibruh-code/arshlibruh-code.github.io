@@ -99,9 +99,9 @@ if (location.hostname === 'localhost') {
 }
 
 
-// The 3D hello block is about 7.25 model units wide (36 km at 5000 m per unit). A fixed
+// The 3D hello block is about 7 model units wide (35 km at 5000 m per unit). A fixed
 // zoom clips it on narrow phones, so the landing zoom is fitted to the screen width.
-const INTRO_CONTENT_METERS = 7.25 * 5000;
+const INTRO_CONTENT_METERS = 7.0 * 5000;
 function introZoom(preferred) {
     const lat = 12.48 * Math.PI / 180;
     // the camera is pitched and turned, so the near edge reads wider than a top-down fit
@@ -2920,7 +2920,7 @@ const text3DLayer = {
             });
             
             // Text lines
-            const lines = ['HEY! I\'M ARSHAD', 'NICE TO MEET YOU'];
+            const lines = ['HEY! I\'M ARSHAD', 'GLAD YOU\'RE HERE'];
             const fontSize = 0.5;
             const lineHeight = 1.45; // Control line spacing (multiplier of fontSize)
             
