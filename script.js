@@ -362,10 +362,10 @@ const projectsData = [
 
 const dynamicTexts = [
     'I design tools for maps, 3D and data.',
-    'I make maps do things they weren\'t supposed to.',
-    'product design ✽ geospatial ✽ whatever\'s interesting.',
     'I start where the work happens, not on a screen.',
-    'Where the human stays in control.',
+    'Orchestrating agents ✽ designing the handoff.',
+    'I make GPUs do weird things.',
+    'product design ✽ film ✽ whatever\'s interesting.',
 ];
 let currentTextIndex = 0;
 
