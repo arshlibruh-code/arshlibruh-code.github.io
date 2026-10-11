@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export function createRadarChart(data = [0.8, 0.7, 0.9, 0.6, 0.85, 0.75], maxRadius = 5, numSections = 6, labels = []) {
+export function createRadarChart(data = [0.8, 0.7, 0.9, 0.6, 0.85, 0.75], maxRadius = 5, numSections = 6, labels = [], title = '') {
     const group = new THREE.Group();
     const angleStep = (Math.PI * 2) / numSections;
     const tubeRadius = 0.006;
@@ -212,6 +212,32 @@ export function createRadarChart(data = [0.8, 0.7, 0.9, 0.6, 0.85, 0.75], maxRad
         });
     }
     
+    // Character-card title above the chart (the group is flipped, so -y is up)
+    if (title) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = 1024;
+        canvas.height = 128;
+        const texture = new THREE.CanvasTexture(canvas);
+        const drawTitle = () => {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.font = 'bold 48px Quantico, sans-serif';
+            context.fillStyle = '#ffffff';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillText(title, canvas.width / 2, canvas.height / 2);
+            texture.needsUpdate = true;
+        };
+        drawTitle();
+        if (document.fonts) {
+            document.fonts.load('bold 48px Quantico').then(drawTitle).catch(() => {});
+        }
+        const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, alphaTest: 0.1 }));
+        sprite.scale.set(5, 0.625, 1);
+        sprite.position.set(0, -maxRadius * 1.38, 0);
+        group.add(sprite);
+    }
+
     group.rotation.x = -Math.PI / 1;    
     return group;
 }
