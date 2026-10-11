@@ -40,6 +40,13 @@ const FALLBACK_POPUP_IMAGE = '/portfolio-card.webp';
 // Phones get a lighter build: capped resolution, no glass blur or grain, simpler 3D lighting
 const IS_PHONE = window.matchMedia('(max-width: 640px), (pointer: coarse)').matches;
 
+// Esri serves tiles over HTTP/1.1, so the browser opens at most 6 connections per host.
+// Two hostnames serve identical tiles; listing both doubles the lanes during the fly-in.
+const ESRI_TILE_URLS = [
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+];
+
 const map = new maplibregl.Map({
     container: 'map',
     // iPhones render at 3x; 2x looks the same and draws far fewer pixels
@@ -55,7 +62,7 @@ const map = new maplibregl.Map({
         },
         sources: {
             satellite: {
-                tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+                tiles: ESRI_TILE_URLS,
                 tileSize: 256,
                 // Esri has no z19 around Dehradun (St. Judes, Doon, Arshli Bridge) and a pitched
                 // camera asks for one level more than the centre, so cap at 18 and let MapLibre stretch it
@@ -2805,7 +2812,27 @@ const skills = [
 
 const chartCoords = [75.4, 12.88];
 const chartFlyToCoords = [75.4, 12.98];
-const textCoords = [74.75, 12.48]; 
+const textCoords = [74.75, 12.48];
+
+// Warm the browser cache with the tiles of the landing view, so the camera arrives on a
+// sharp coast instead of waiting for them. Same URLs and host choice MapLibre will use.
+(function warmLandingTiles() {
+    const z = Math.round(introZoom(9.5));
+    const n = 2 ** z;
+    const lat = textCoords[1] * Math.PI / 180;
+    const cx = Math.floor((textCoords[0] + 180) / 360 * n);
+    const cy = Math.floor((1 - Math.log(Math.tan(lat) + 1 / Math.cos(lat)) / Math.PI) / 2 * n);
+    const halfCols = Math.ceil(window.innerWidth / 512);
+    const halfRows = Math.ceil(window.innerHeight / 512);
+    // The camera is pitched, so the top of the screen reaches one row further north
+    for (let y = cy - halfRows - 1; y <= cy + halfRows; y++) {
+        for (let x = cx - halfCols; x <= cx + halfCols; x++) {
+            const url = ESRI_TILE_URLS[(x + y) % ESRI_TILE_URLS.length]
+                .replace('{z}', z).replace('{y}', y).replace('{x}', x);
+            fetch(url, { mode: 'cors' }).catch(() => {});
+        }
+    }
+})(); 
 const buttonCoords = [74.75, 12.45];
 
 const customLayer = {
@@ -3533,6 +3560,18 @@ const buttons3DLayer = {
     }
 };
 
+// The intro flight starts as soon as the style is ready instead of on load, which waits
+// for the first tiles and left a still, blurry globe on screen for half a second
+map.once('style.load', () => {
+    map.flyTo({
+        center: textCoords,
+        zoom: introZoom(9.5),
+        bearing: 10,
+        pitch: 30,
+        duration: 3000
+    });
+});
+
 map.on('style.load', () => {
     map.addLayer(customLayer);
     map.addLayer(text3DLayer);
@@ -3554,13 +3593,6 @@ map.on('load', () => {
     document.addEventListener('mousedown', () => handleUserInteraction());
     document.addEventListener('click', () => handleUserInteraction());
 
-    map.flyTo({
-        center: textCoords,
-        zoom: introZoom(9.5),
-        bearing: 10,
-        pitch: 30,
-        duration: 3000
-    });
     currentTextIndex = 0;
     updateJourneyText(dynamicTexts[0]);
     checkAndStartTextRotation();
