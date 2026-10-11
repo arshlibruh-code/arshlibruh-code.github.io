@@ -3888,7 +3888,8 @@ const glassRail = {
 
     onAdd(mapInstance, gl) {
         this.map = mapInstance;
-        this.target = document.querySelector('.journey-button-wrapper');
+        // every glass pill: the bottom rail and the top-left PROJECT MODE / journey year pill
+        this.targets = [document.querySelector('.journey-button-wrapper'), document.querySelector('.date-pill')].filter(Boolean);
         const vs = `
             attribute vec2 aPos;
             uniform vec4 uRect;
@@ -3984,8 +3985,9 @@ const glassRail = {
             this.program = null;
         }
         // the pill can change size (MOVE TO STAY, project mode text), so redraw then
-        if (this.target && 'ResizeObserver' in window) {
-            new ResizeObserver(() => mapInstance.triggerRepaint()).observe(this.target);
+        if ('ResizeObserver' in window) {
+            const observer = new ResizeObserver(() => mapInstance.triggerRepaint());
+            this.targets.forEach((el) => observer.observe(el));
         }
         window.addEventListener('resize', () => mapInstance.triggerRepaint());
     },
@@ -3997,10 +3999,14 @@ const glassRail = {
         const fbH = gl.drawingBufferHeight;
         const cr = canvas.getBoundingClientRect();
 
-        if (!this.program || !this.target) {
+        if (!this.program) {
             return;
         }
-        const r = this.target.getBoundingClientRect();
+        this.targets.forEach((el) => this.drawGlass(gl, el, cr, dpr, fbW, fbH));
+    },
+
+    drawGlass(gl, el, cr, dpr, fbW, fbH) {
+        const r = el.getBoundingClientRect();
         if (r.width === 0 || r.height === 0) {
             return;
         }
