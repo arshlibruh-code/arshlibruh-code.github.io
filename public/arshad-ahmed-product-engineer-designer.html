@@ -154,6 +154,7 @@ const WORK = [
       state: 'Defined interaction models for complex spatial workflows: 3D camera orchestration, underground visualization, multi-step digitization. Implemented as state machines, not just specs.',
       go: 'Led Aereo Go research, design, and launch. Replaced printed field maps with live data on the phones operators already carried.',
       system: 'Established design system, UX processes, and research practice from zero. Maintained and scaled across 3 simultaneous projects.',
+      murph: 'Built Murph, an AI teammate that carries a Jira ticket from a Slack thread to reviewed merge requests across repos, fixing its own failed pipelines. Designed the workflow, the two human review gates and the rule that it never merges. In pilot with our developers.',
       team: 'Led a small design team of full-time designers and interns, and set how design worked with 20+ engineers, PMs and data scientists: specs, reviews and handoff.',
   } },
   { role: 'UI/UX Designer, Ignitho Technologies', from: [2021, 1], to: [2021, 11], where: 'Bengaluru, India',
@@ -192,13 +193,13 @@ const LANES = {
   },
   design: {
     title: 'Senior Product Designer, Spatial and Data Tools',
-    summary: 'Product designer who ships the working tool, not just the mock. Nearly five years on a production web-GIS platform for mining and drone survey, where the users are technical specialists and the interface is structured data: point clouds, digitization and annotation, terrain, coordinate systems. I built the design system and research practice there from zero and scaled both across three products and 20+ engineers. I prototype on real data in code, built by directing AI agents, rather than in static mocks.',
+    summary: 'Product designer for spatial and data tools, and for how teams work with AI. Nearly five years on a production web-GIS platform for mining and drone survey, where the users are technical specialists and the interface is structured data: point clouds, terrain, digitization. I built the design system and research practice there from zero. Lately I am building an AI teammate: you hand it a Jira ticket in Slack, it asks clarifying questions, writes the technical analysis, opens the merge requests, and stops at two human review gates. It never merges. Our developers are piloting it on real features.',
     skills: [
       ['Design', 'Design systems (tokens, components, documentation, adoption) &middot; Interaction design &middot; Cross-tool workflow modelling &middot; Field research and shadowing &middot; Data-dense tables, filters and dashboards &middot; Spatial and 3D interaction models &middot; Figma'],
       ['Domain', 'Map annotation and digitization &middot; Point clouds &middot; Drone survey &middot; Terrain analysis &middot; Internal and developer tooling &middot; Mining and field operations'],
       ['Building with agents', 'Claude Code and Codex as the daily method &middot; Prototyping in code on real data &middot; AGENTS.md and context architecture &middot; Shipped in React, TypeScript, Three.js, WebGPU and MapLibre GL'],
     ],
-    bullets: ['system', 'drone', 'state', 'specs', 'lead', 'browser', 'domain', 'go', 'team'],
+    bullets: ['system', 'murph', 'drone', 'state', 'specs', 'lead', 'browser', 'domain', 'go', 'team'],
     projects: ['holision', 'projector', 'fndash', 'mbrt', 'pointpro', 'splatgpu'],
   },
   creative: {
@@ -229,8 +230,8 @@ function duration(startYear, startMonth, endYear, endMonth) {
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 function render() {
-  const key = (location.hash || '#main').slice(1);
-  const lane = LANES[key] || LANES.main;
+  const key = (location.hash || '#design').slice(1);
+  const lane = LANES[key] || LANES.design;
 
   document.title = 'Arshad Ahmed, ' + lane.title;
   document.getElementById('r-title').textContent = lane.title;

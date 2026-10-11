@@ -2,11 +2,11 @@
   "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
   "basics": {
     "name": "Arshad Ahmed",
-    "label": "Design Engineer, Spatial and 3D Tools",
+    "label": "Product Designer, Spatial and Data Tools",
     "email": "arshlibruh@gmail.com",
     "phone": "+91 89370 49848",
     "url": "https://arshlibruh-code.github.io",
-    "summary": "Designs spatial tools and builds them, down to the renderer, by directing AI agents: owns the architecture, the specs and the review, and the agents write the code. Nearly five years on a production web-GIS platform for mining and drone survey.",
+    "summary": "Product designer for spatial and data tools, and for how teams work with AI. Nearly five years on a production web-GIS platform for mining and drone survey, where the users are technical specialists and the interface is structured data. Built the design system and research practice there from zero. Lately building an AI teammate that takes a Jira ticket in Slack to reviewed merge requests, with two human review gates; developers are piloting it.",
     "location": {
       "city": "Bengaluru",
       "countryCode": "IN"
@@ -32,6 +32,7 @@
       "startDate": "2021-11",
       "highlights": [
         "Took workflows that needed Global Mapper and AutoCAD on expensive hardware and made them run in a browser.",
+        "Building an AI teammate that carries a Jira ticket from a Slack thread to reviewed merge requests across repos, with two human review gates and a rule that it never merges. In pilot with developers.",
         "Established the design system, UX processes and research practice from zero, scaled across 3 simultaneous projects.",
         "Replaced DGPS stockpile walkdowns with drone-based volumetrics processed in the cloud.",
         "Own and operate an experimental deployment environment where ideas are prototyped on real data and pass a go/no-go gate before the sprint.",

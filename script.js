@@ -269,7 +269,7 @@ const projectsData = [
         id: 'project-b',
         markerLabel: 'B',
         title: 'AEREO CLOUD',
-        description: 'Production web-GIS platform for mining and drone survey teams. I conceived the experimental env, pushed 30k+ lines, embedded with mine operators on-site, and defined the specs engineering built from.',
+        description: 'Production web-GIS platform for mining and drone survey teams. I set up the experimental environment, worked on-site with mine operators, and defined the specs engineering built from.',
         image: '/aereo-cloud.webp',
         detailImage: '/aereo-cloud-cover.webp',
         linkUrl: 'https://github.com/arshlibruh-code',
@@ -279,7 +279,7 @@ const projectsData = [
         hideTitle: true,
         showDetailTags: false,
         wipNotice: 'THIS PAGE IS WORK IN PROGRESS',
-        intro: 'Aereo Cloud is a production web-GIS platform used by mining and drone survey teams. I own the experimental environment (<a href="https://experiments.cloud.aereo.co.in" target="_blank" rel="noopener noreferrer" style="color:inherit;opacity:0.7;text-underline-offset:3px;">experiments.cloud.aereo.co.in</a>) (30k+ lines across commits), fly to active mine sites to embed with operators, translate what I find into engineering-ready specs, and ship the result. The loop is: field discovery, spec, build, validate, repeat.',
+        intro: 'Aereo Cloud is a production web-GIS platform used by mining and drone survey teams. I own the experimental environment (<a href="https://experiments.cloud.aereo.co.in" target="_blank" rel="noopener noreferrer" style="color:inherit;opacity:0.7;text-underline-offset:3px;">experiments.cloud.aereo.co.in</a>), visit active mine sites to work alongside operators, translate what I find into engineering-ready specs, and ship the result. The loop is: field discovery, spec, build, validate, repeat.',
         sections: [
             {
                 heading: 'Context',
@@ -299,18 +299,18 @@ const projectsData = [
             },
             {
                 heading: 'Challenges and Tradeoffs',
-                body: 'Balancing depth for expert users with clarity for newer users was a constant tradeoff. Mobile constraints required dedicated research and interaction adjustments. Coordinating 4+ UX designers with 20+ engineers, PMs, and data scientists required clear documentation, visible decisions, and a shared delivery process.'
+                body: 'Balancing depth for expert users with clarity for newer users was a constant tradeoff. Mobile constraints required dedicated research and interaction adjustments. Coordinating a small design team of full-time designers and interns with 20+ engineers, PMs, and data scientists required clear documentation, visible decisions, and a shared delivery process.'
             },
             {
                 heading: 'Outcome and Next Steps',
                 body: 'We shipped a web-GIS platform with an established UX process, research practice, and design system. The product now supports day-to-day map and 3D workflows, including digitization. Next steps included extending mobile workflows, expanding the system as product scope grew, and keeping research tied to roadmap decisions.'
             }
         ],
-        myRole: 'I led UX research, ideation, design, and delivery for Aereo Cloud. I ran 100+ research studies, created wireframes and high-fidelity prototypes, and established the UX process and design system. I managed 4+ UX designers and collaborated with 20+ engineers, PMs, and data scientists.',
+        myRole: 'I led UX research, ideation, design, and delivery for Aereo Cloud. I ran 100+ research studies, created wireframes and high-fidelity prototypes, and established the UX process and design system. I led a small design team of full-time designers and interns and set how design worked with 20+ engineers, PMs, and data scientists.',
         stack: 'MapLibre, Three.js, JavaScript, Vite, HTML/CSS',
         impactPlaceholders: [
             '100+ research studies conducted across the project lifecycle',
-            '4+ UX designers aligned with 20+ cross-functional collaborators',
+            'A small design team aligned with 20+ cross-functional collaborators',
             'Usability tests used to shape 3D and workflow interaction decisions'
         ],
         coords: [74.81237025960675, 12.896946186306437]
@@ -319,7 +319,7 @@ const projectsData = [
         id: 'project-c',
         markerLabel: 'C',
         title: 'MBRT',
-        description: 'NLP to 6 specialized map agents. Natural language drives routes, isochrones, buffers, polygons, and elevation profiles — all live in Mapbox.',
+        description: 'NLP to 6 specialized map agents. Natural language drives routes, isochrones, buffers, polygons, and elevation profiles, all live in Mapbox.',
         image: '/mbrt.webp',
         linkUrl: 'https://github.com/arshlibruh-code/MBRT',
         linkLabel: 'VIEW ON GITHUB',

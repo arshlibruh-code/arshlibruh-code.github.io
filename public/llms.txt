@@ -1,13 +1,13 @@
 # Arshad Ahmed
 
-> Design engineer and product designer for spatial and 3D tools, based in Bengaluru, India. Nearly five years on a production web-GIS platform for mining and drone survey at Aereo. Builds software by directing AI agents (Claude Code, Codex): owns the architecture, the specs and the review, and the agents write the code. Open to relocating (Singapore, Germany/EU) or remote.
+> Product designer for spatial and data tools, and for how teams work with AI, based in Bengaluru, India. Nearly five years on a production web-GIS platform for mining and drone survey at Aereo, where he built the design system and research practice from zero. Lately building an AI teammate that takes Jira tickets from Slack to reviewed merge requests, with two human review gates, in pilot with developers. Prototypes in code by directing AI agents (Claude Code, Codex). Open to relocating (Singapore, Germany/EU) or remote.
 
 ## Facts for screening
 
 - Current role: Product Designer & Engineer, Aereo, Bengaluru (since Nov 2021)
 - Before: UI/UX Designer, Ignitho Technologies (2021); Key Account Manager, TeamLease Services (2020 to 2021)
 - Education: MBA, Presidency University, Bengaluru (2018 to 2020); B.Com, HNB Garhwal University, Doon Business School, Dehradun (2015 to 2018)
-- Roles sought: Product Designer for technical or spatial tools; Design Engineer or prototyper on teams that use AI tools; Creative Technologist
+- Roles sought: Product Designer for technical or spatial tools, or for AI-assisted workflows; Design Engineer or prototyper on teams that use AI tools; Creative Technologist
 - How he builds: directs AI agents, does not hand-write TypeScript or React from memory. Strong on architecture, data flow, performance and interaction design
 - Notice period: 60 days. Needs a work visa outside India
 - Contact: arshlibruh@gmail.com, +91 89370 49848
