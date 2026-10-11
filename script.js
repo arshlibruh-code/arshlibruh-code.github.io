@@ -3380,10 +3380,19 @@ function autoProjectsAllowed() {
     return !autoProjectsDone && !prefersReducedMotion && !isProjectDetailModalOpen();
 }
 
+function resetCountdownBar() {
+    const bar = document.querySelector('.journey-progress-bar');
+    if (bar) {
+        bar.style.transition = '';
+        bar.style.width = '0%';
+    }
+}
+
 function cancelAutoCountdown() {
     if (autoCountdownTimer) {
         clearInterval(autoCountdownTimer);
         autoCountdownTimer = null;
+        resetCountdownBar();
         updateJourneyButtonText();
         text3DLayer.setCountdown(null);
     }
@@ -3395,8 +3404,14 @@ function startAutoCountdown() {
         return;
     }
     let remaining = 5;
+    // the 3D countdown says where; the rail says how to stay, its bar fills over the 5s
+    button.textContent = 'MOVE TO STAY';
+    const bar = document.querySelector('.journey-progress-bar');
+    if (bar) {
+        bar.style.transition = 'width 5s linear';
+        requestAnimationFrame(() => { bar.style.width = '100%'; });
+    }
     const show = () => {
-        button.textContent = `PROJECTS IN ${remaining}`;
         text3DLayer.setCountdown(['TAKING YOU TO PROJECTS IN', String(remaining)]);
     };
     show();
@@ -3409,6 +3424,7 @@ function startAutoCountdown() {
         clearInterval(autoCountdownTimer);
         autoCountdownTimer = null;
         autoProjectsDone = true;
+        resetCountdownBar();
         text3DLayer.setCountdown(null);
         enterProjectsMode();
         if (typeof gtag === 'function') {
