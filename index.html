@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GM3HK9K6G6"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-GM3HK9K6G6');
+        // Only the live site reports; localhost and test runs never reach Analytics
+        if (location.hostname.endsWith('github.io')) {
+            const tag = document.createElement('script');
+            tag.async = true;
+            tag.src = 'https://www.googletagmanager.com/gtag/js?id=G-GM3HK9K6G6';
+            document.head.appendChild(tag);
+            gtag('js', new Date());
+            gtag('config', 'G-GM3HK9K6G6');
+        }
     </script>
     <title>Arshad Ahmed ✽ maps, 3D, AI</title>
     <meta name="description" content="Product designer for spatial and data tools, and for how teams work with AI. Bengaluru." />
