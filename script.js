@@ -2699,6 +2699,7 @@ const text3DLayer = {
             // Inter Tight, set letter by letter so it can be tracked tight like the tagline
             // (TextGeometry has no letter-spacing of its own)
             const tracking = -0.04 * fontSize;
+            const wordSpacing = 0.5 * fontSize;
             const unitsToSize = fontSize / font.data.resolution;
             const lineSpacing = fontSize * lineHeight;
             const totalHeight = (lines.length - 1) * lineSpacing;
@@ -2723,7 +2724,8 @@ const text3DLayer = {
                         mesh.position.x = cursor;
                         lineGroup.add(mesh);
                     }
-                    cursor += advance + tracking;
+                    // words open up by half an em, matching the tagline's word-spacing: 0.5em
+                    cursor += advance + tracking + (char === ' ' ? wordSpacing : 0);
                 }
                 const lineWidth = cursor - tracking;
                 lineGroup.children.forEach((mesh) => { mesh.position.x -= lineWidth / 2; });
