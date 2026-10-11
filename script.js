@@ -893,6 +893,14 @@ function createPopupCard(data, options = {}) {
         } else {
             cta.target = '_blank';
             cta.rel = 'noopener noreferrer';
+            // leaving the site to try the work is the strongest interest signal
+            cta.addEventListener('click', () => {
+                const isProject = String(data.id || '').startsWith('project-');
+                gtag('event', isProject ? 'project_link_click' : 'journey_link_click', {
+                    project_id: data.id || data.name,
+                    destination: data.linkUrl
+                });
+            });
         }
 
         body.appendChild(cta);
@@ -1587,12 +1595,10 @@ function createSideCard(project) {
     card.append(img, text);
     card.addEventListener('click', (event) => {
         event.stopPropagation();
-        if (typeof gtag === 'function') {
-            gtag('event', 'project_popup_open', { project_id: project.id, project_title: project.title });
-        }
         if (project.linkBehavior === 'modal') {
             openProjectDetailModal(project);
         } else if (project.linkUrl) {
+            gtag('event', 'project_link_click', { project_id: project.id, destination: project.linkUrl });
             window.open(project.linkUrl, '_blank', 'noopener');
         }
     });
@@ -2552,6 +2558,7 @@ function startJourney() {
     }
 
     const location = journey[currentJourneyIndex];
+    gtag('event', 'journey_step', { step: currentJourneyIndex + 1, place: location.name });
     updateJourneyText(location.journeyText || location.description);
     updateJourneyDate(location.date);
 
@@ -3552,6 +3559,7 @@ function resetCountdownBar() {
 
 function cancelAutoCountdown() {
     if (autoCountdownTimer) {
+        gtag('event', 'auto_projects_cancelled');
         clearInterval(autoCountdownTimer);
         autoCountdownTimer = null;
         resetCountdownBar();
