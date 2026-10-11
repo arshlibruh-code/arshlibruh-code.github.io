@@ -10,7 +10,7 @@
 - Roles sought: Product Designer for technical or spatial tools, or for AI-assisted workflows; Design Engineer or prototyper on teams that use AI tools; Creative Technologist
 - How he builds: directs AI agents, does not hand-write TypeScript or React from memory. Strong on architecture, data flow, performance and interaction design
 - Notice period: 60 days. Needs a work visa outside India
-- Contact: arshlibruh@gmail.com, +91 89370 49848
+- Contact: arshlibruh@gmail.com, linkedin.com/in/arshlibruh
 
 ## Work
 
