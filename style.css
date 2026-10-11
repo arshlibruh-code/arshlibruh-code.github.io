@@ -1130,3 +1130,9 @@ body {
     -webkit-mask-image: linear-gradient(to top, #000 45%, transparent);
     mask-image: linear-gradient(to top, #000 45%, transparent);
 }
+
+@media (max-width: 640px) {
+    .bottom-fade {
+        display: none;
+    }
+}
