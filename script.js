@@ -291,7 +291,7 @@ const projectsData = [
             },
             {
                 heading: 'Approach',
-                body: 'I grounded the work in research through user interviews, competitive review, and usability testing. Over the lifecycle, we ran 100+ studies that informed persona definition, problem framing, and prioritization. I established a repeatable UX workflow from discovery to high-fidelity prototypes and built a system engineering could implement.'
+                body: 'I grounded the work in research through user interviews, competitive review, and usability testing. Research informed persona definition, problem framing, and prioritization. I established a repeatable UX workflow from discovery to high-fidelity prototypes and built a system engineering could implement.'
             },
             {
                 heading: 'Workflow',
@@ -306,10 +306,9 @@ const projectsData = [
                 body: 'We shipped a web-GIS platform with an established UX process, research practice, and design system. The product now supports day-to-day map and 3D workflows, including digitization. Next steps included extending mobile workflows, expanding the system as product scope grew, and keeping research tied to roadmap decisions.'
             }
         ],
-        myRole: 'I led UX research, ideation, design, and delivery for Aereo Cloud. I ran 100+ research studies, created wireframes and high-fidelity prototypes, and established the UX process and design system. I led a small design team of full-time designers and interns and set how design worked with 20+ engineers, PMs, and data scientists.',
+        myRole: 'I led UX research, ideation, design, and delivery for Aereo Cloud. I ran the research, created wireframes and high-fidelity prototypes, and established the UX process and design system. I led a small design team of full-time designers and interns and set how design worked with 20+ engineers, PMs, and data scientists.',
         stack: 'MapLibre, Three.js, JavaScript, Vite, HTML/CSS',
         impactPlaceholders: [
-            '100+ research studies conducted across the project lifecycle',
             'A small design team aligned with 20+ cross-functional collaborators',
             'Usability tests used to shape 3D and workflow interaction decisions'
         ],
@@ -329,12 +328,12 @@ const projectsData = [
     {
         id: 'project-d',
         markerLabel: 'D',
-        title: 'WDGTS',
-        description: 'Modular widget system for GIS and mapping apps: self-contained Compass, Drawing, and Audio widgets for MapTiler SDK and MapLibre GL.',
-        image: '/wdgts.webp',
-        linkUrl: 'https://github.com/arshlibruh-code/WDGTS',
-        linkLabel: 'VIEW ON GITHUB',
-        focusTags: ['MAPS', 'GIS', 'COMPONENTS'],
+        title: 'HOLISION',
+        description: 'Live terrain cut and fill in the browser. Real elevation tiles streamed and decoded, custom GLSL shaders, contours and volumes computed as you work.',
+        image: '/holision.webp',
+        linkUrl: 'https://holision.pages.dev',
+        linkLabel: 'VIEW LIVE',
+        focusTags: ['TERRAIN', 'THREE.JS', 'GLSL'],
         coords: [74.77493613634593, 13.073059748410813]
     },
     {
