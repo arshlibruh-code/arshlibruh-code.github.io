@@ -345,6 +345,11 @@ body {
     opacity: 0.85;
 }
 
+.skills .pill {
+    opacity: 0.4;
+    cursor: default;
+}
+
 .skills {
     display: flex;
     margin-top: 8px;
