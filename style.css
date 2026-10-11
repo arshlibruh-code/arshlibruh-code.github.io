@@ -1136,3 +1136,20 @@ body {
         display: none;
     }
 }
+
+/* Phones: flat panels instead of frosted glass, and no grain on the tagline. iOS Safari
+   re-blurs the moving map behind every glass panel on every frame */
+@media (max-width: 640px), (pointer: coarse) {
+    .date-pill,
+    .controls,
+    .journey-button-wrapper .pill-button,
+    .info-popup-card {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(14, 17, 21, 0.88);
+    }
+
+    .text-group-top-left .tagline {
+        filter: none;
+    }
+}

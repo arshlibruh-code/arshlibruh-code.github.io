@@ -37,8 +37,13 @@ const PROJECT_BEARING_SMOOTHING = 0.2;
 const POPUP_CLOSE_ANIMATION_MS = 260;
 const FALLBACK_POPUP_IMAGE = '/portfolio-card.webp';
 
+// Phones get a lighter build: capped resolution, no glass blur or grain, simpler 3D lighting
+const IS_PHONE = window.matchMedia('(max-width: 640px), (pointer: coarse)').matches;
+
 const map = new maplibregl.Map({
     container: 'map',
+    // iPhones render at 3x; 2x looks the same and draws far fewer pixels
+    pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
     zoom: 1,
     center: [77.5946, 12.9716],
     attributionControl: false,
@@ -88,6 +93,13 @@ const map = new maplibregl.Map({
         }
     }
 });
+
+// True when a coordinate is near the visible map, so off-screen 3D can stop animating
+function isOnScreen(lngLat, margin = 200) {
+    const point = map.project(lngLat);
+    const el = map.getContainer();
+    return point.x > -margin && point.x < el.clientWidth + margin && point.y > -margin && point.y < el.clientHeight + margin;
+}
 
 let mapViewportRefreshTimer = null;
 function queueMapViewportRefresh(delayMs = 120) {
@@ -2101,7 +2113,7 @@ if (!prefersReducedMotion) {
     }, 120);
 
     const grainNoise = document.getElementById('film-grain-noise');
-    if (grainNoise) {
+    if (grainNoise && !IS_PHONE) {
         setInterval(() => grainNoise.setAttribute('seed', String(Math.floor(Math.random() * 1000))), 83);
     }
 }
@@ -2669,7 +2681,9 @@ const customLayer = {
             this.radarChart.userData.fillMesh.material.uniforms.uTime.value = performance.now() / 1000;
         }
 
-        if (this.radarChart && this.animationStartTime) {
+        // only spin (and keep the map redrawing) while the chart is actually in view
+        const chartVisible = isOnScreen(chartCoords);
+        if (this.radarChart && this.animationStartTime && chartVisible) {
             const elapsed = Date.now() - this.animationStartTime;
             
             if (elapsed < this.animationDelay) {
@@ -2715,7 +2729,6 @@ const customLayer = {
         this.camera.projectionMatrix = m.multiply(l);
         this.renderer.resetState();
         this.renderer.render(this.scene, this.camera);
-        this.map.triggerRepaint();
     }
 };
 
@@ -2739,10 +2752,12 @@ const text3DLayer = {
         this.scene.add(ambientLight);
         
         // RectAreaLight - rectangular area light (like a window/panel)
-        const rectAreaLight = new THREE.RectAreaLight(0xffffff, 10, 10, 100);
-        rectAreaLight.position.set(0, 0, 0);
-        rectAreaLight.lookAt(0, 0, 0); // Point towards the text
-        this.scene.add(rectAreaLight);
+        const rectAreaLight = IS_PHONE ? null : new THREE.RectAreaLight(0xffffff, 10, 10, 100);
+        if (rectAreaLight) {
+            rectAreaLight.position.set(0, 0, 0);
+            rectAreaLight.lookAt(0, 0, 0); // Point towards the text
+            this.scene.add(rectAreaLight);
+        }
         this.rectAreaLight = rectAreaLight; // Store reference for animation
         
         // Animation start time
@@ -2849,6 +2864,7 @@ const text3DLayer = {
         if (this.countdownGroup) {
             this.textGroup.remove(this.countdownGroup);
             this.countdownGroup = null;
+            map.triggerRepaint();
         }
         if (!text) {
             return;
@@ -2862,6 +2878,7 @@ const text3DLayer = {
         this.countdownGroup.add(captionLine, numberLine);
         this.countdownGroup.position.y = -2.75;
         this.textGroup.add(this.countdownGroup);
+        map.triggerRepaint();
     },
 
     render(gl, args) {
@@ -2913,7 +2930,10 @@ const text3DLayer = {
         this.camera.projectionMatrix = m.multiply(l);
         this.renderer.resetState();
         this.renderer.render(this.scene, this.camera);
-        this.map.triggerRepaint();
+        // keep redrawing only while the intro depth animation is still running
+        if (!this.textGroup || this.textScaleIntroQueuedAt !== null || typeof this.textScaleIntroStartTime === 'number') {
+            this.map.triggerRepaint();
+        }
     }
 };
 
@@ -2936,10 +2956,12 @@ const buttons3DLayer = {
         const ambientLight = new THREE.AmbientLight(0xffffff, 2);
         this.scene.add(ambientLight);
         
-        const rectAreaLight = new THREE.RectAreaLight(0xffffff, 10, 10, 100);
-        rectAreaLight.position.set(0, 0, 0);
-        rectAreaLight.lookAt(0, 0, 0);
-        this.scene.add(rectAreaLight);
+        const rectAreaLight = IS_PHONE ? null : new THREE.RectAreaLight(0xffffff, 10, 10, 100);
+        if (rectAreaLight) {
+            rectAreaLight.position.set(0, 0, 0);
+            rectAreaLight.lookAt(0, 0, 0);
+            this.scene.add(rectAreaLight);
+        }
         this.rectAreaLight = rectAreaLight;
         
         this.lightAnimationStartTime = Date.now();
@@ -3329,7 +3351,12 @@ const buttons3DLayer = {
         
         this.renderer.resetState();
         this.renderer.render(this.scene, this.camera);
-        this.map.triggerRepaint();
+        const animating = !this.buttonMeshes
+            || (this.buttonAnimations || []).some((anim) => anim && anim.isAnimating)
+            || (this.buttonIntroStates || []).some((state) => !state.done);
+        if (animating) {
+            this.map.triggerRepaint();
+        }
     }
 };
 
