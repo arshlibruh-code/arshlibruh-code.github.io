@@ -310,13 +310,43 @@ const projectsData = [
         title: 'AI TEAMMATE',
         description: 'An AI teammate our developers are piloting. Hand it a Jira ticket in Slack: it asks before it assumes, writes the analysis, opens the merge requests, and stops at two human review gates. It never merges.',
         image: '/ai-teammate.webp',
+        video: '/ai-teammate.mp4',
+        detailImage: '/ai-teammate.webp',
+        linkLabel: 'VIEW PROJECT',
+        linkBehavior: 'modal',
         focusTags: ['AI', 'WORKFLOW', 'HUMAN IN THE LOOP'],
+        showDetailTags: false,
+        intro: 'An AI teammate for a product team. Hand it a Jira ticket in its Slack channel and it carries the work toward reviewed code, one thread per ticket. It is in pilot with our developers on real features.',
+        sections: [
+            {
+                heading: 'Context',
+                body: 'Most of a small team\'s time goes into the middle of a ticket: working out what was meant, writing the plan, wiring the change across repos. That middle is where an agent can help, as long as people stay in charge of it.'
+            },
+            {
+                heading: 'Problem',
+                body: 'An agent that writes code is easy to build and hard to trust. The design problem was not what it can do, but where it should stop, and how a person knows what it is doing without watching it.'
+            },
+            {
+                heading: 'How a ticket moves',
+                body: 'Every ticket walks the same path: read, ask, analyse, build. It asks clarifying questions before it assumes, writes its analysis for review, and only then writes code. Every step shows up in the same Slack thread.'
+            },
+            {
+                heading: 'Design decisions',
+                body: 'It never merges: a person clicks merge, always. It stops at two review gates, before the code and after it, and waits at both. It only counts a review as done when someone replies in the thread, so approval is always a visible act. It reads the product\'s own manuals, so it never asks the team what an iteration is.'
+            },
+            {
+                heading: 'Where it is now',
+                body: 'In pilot with our developers on real features. The details are better on a call.'
+            }
+        ],
+        myRole: 'I designed the workflow: the states a ticket moves through, the two human gates, the persona, and what it is and is not allowed to do.',
         coords: [74.81237025960675, 12.896946186306437]
     },
     {
         id: 'project-d',
         markerLabel: '03',
         title: 'HOLISION',
+        video: '/holision.mp4',
         imagePosition: 'center bottom',
         description: 'Live terrain cut and fill in the browser. Real elevation tiles streamed and decoded, custom GLSL shaders, contours and volumes computed as you work.',
         image: '/holision.webp',
@@ -835,7 +865,40 @@ function createPopupCard(data, options = {}) {
         body.appendChild(cta);
     }
 
-    card.appendChild(image);
+    // A short silent loop replaces the still when the card has one; the still stays as
+    // its poster, and visitors with reduced motion keep the still
+    if (data.video && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const video = document.createElement('video');
+        video.className = 'info-popup-image';
+        video.src = normalizeAssetPath(data.video);
+        video.poster = image.src;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.preload = 'none';
+        video.setAttribute('aria-label', data.title || 'Preview');
+        card.appendChild(video);
+        // Start only once the camera has landed, so decoding never competes with the flight,
+        // and only one card plays at a time
+        const startWhenStill = () => {
+            if (!video.isConnected) {
+                return;
+            }
+            if (map.isMoving()) {
+                map.once('moveend', startWhenStill);
+                return;
+            }
+            document.querySelectorAll('video.info-popup-image').forEach((other) => {
+                if (other !== video) {
+                    other.pause();
+                }
+            });
+            video.play().catch(() => {});
+        };
+        setTimeout(startWhenStill, 400);
+    } else {
+        card.appendChild(image);
+    }
     card.appendChild(body);
 
     return card;
@@ -1301,6 +1364,8 @@ function closeProjectPopup(popup, options = {}) {
     if (!popup) {
         return;
     }
+
+    popup.getElement()?.querySelectorAll('video').forEach((video) => video.pause());
 
     if (animated) {
         removePopupWithAnimation(popup);
@@ -3306,3 +3371,56 @@ if (document.readyState === 'complete') {
 } else {
     window.addEventListener('load', armAutoProjects);
 }
+
+// Tab life: the favicon breathes through the spinner glyphs about once a second (Chrome
+// throttles background tabs to that anyway), and the title calls them back while away.
+// Safari ignores favicon swaps and keeps the static spark; reduced motion keeps it still.
+(() => {
+    const link = document.querySelector('link[rel="icon"]');
+    const frames = ['·', '✢', '✳', '✶', '✻', '✽'];
+    const sequence = [...frames, ...frames.slice(1, -1).reverse()];
+    const draw = (glyph) => {
+        const size = 64;
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const r = size * 0.18;
+        ctx.fillStyle = '#0B0E12';
+        ctx.beginPath();
+        ctx.roundRect(0, 0, size, size, r);
+        ctx.fill();
+        ctx.fillStyle = '#DDE7EC';
+        if (glyph === '·') {
+            // the dot isn't in the dingbat font, so draw it centred
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size * 0.07, 0, Math.PI * 2);
+            ctx.fill();
+            return canvas.toDataURL('image/png');
+        }
+        ctx.font = `${size * 0.8}px "Zapf Dingbats", "Apple Symbols", sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(glyph + '\uFE0E', size / 2, size * 0.56);
+        return canvas.toDataURL('image/png');
+    };
+
+    if (link && !prefersReducedMotion && CanvasRenderingContext2D.prototype.roundRect) {
+        const urls = sequence.map(draw);
+        let tick = 0;
+        setInterval(() => {
+            tick = (tick + 1) % urls.length;
+            link.href = urls[tick];
+        }, 1000);
+    }
+
+    const title = document.title;
+    document.addEventListener('visibilitychange', () => {
+        document.title = document.hidden ? '✽ come back' : title;
+        const videos = document.querySelectorAll('video.info-popup-image');
+        if (document.hidden) {
+            videos.forEach((video) => video.pause());
+        } else if (videos.length && !map.isMoving()) {
+            videos[videos.length - 1].play().catch(() => {});
+        }
+    });
+})();
