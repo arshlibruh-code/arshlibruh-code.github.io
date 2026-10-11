@@ -335,8 +335,8 @@ const projectsData = [
         title: 'This Portfolio',
         description: 'A spatial portfolio experience built around story, interaction, and camera choreography to showcase my journey and projects.',
         image: '/portfolio-card.webp',
-        linkUrl: 'https://github.com/arshlibruh-code',
-        linkLabel: 'VIEW ON GITHUB',
+        linkLabel: 'CURRENTLY VIEWING',
+        linkBehavior: 'here',
         focusTags: ['UX', 'INTERACTION', 'MAPS', '3D'],
         coords: [74.77493613634593, 13.073059748410813]
     }
@@ -799,7 +799,14 @@ function createPopupCard(data, options = {}) {
         body.appendChild(description);
     }
 
-    if (data.linkUrl || data.linkBehavior === 'modal') {
+    if (data.linkBehavior === 'here') {
+        // You're already inside it: a label, not a link
+        const here = document.createElement('span');
+        here.className = 'info-popup-link';
+        here.style.cursor = 'default';
+        here.textContent = data.linkLabel || 'CURRENTLY VIEWING';
+        body.appendChild(here);
+    } else if (data.linkUrl || data.linkBehavior === 'modal') {
         const cta = document.createElement('a');
         cta.className = 'info-popup-link';
         cta.href = data.linkBehavior === 'modal' ? '#' : data.linkUrl;
@@ -2655,10 +2662,10 @@ const text3DLayer = {
         
         // Load font and create text
         const fontLoader = new FontLoader();
-        fontLoader.load('/fonts/Quantico_Bold.json', (font) => {
+        fontLoader.load('/fonts/InterTight_ExtraBold.json', (font) => {
             // Front face material (white)
             const frontMaterial = new THREE.MeshStandardMaterial({ 
-                color: 0xffffff, // Pure white
+                color: 0xDDE7EC, // Icy white, same as the film-subtitle tagline
                 metalness: 0.0,
                 roughness: 0.9
             });
@@ -2678,33 +2685,39 @@ const text3DLayer = {
             // Create text group
             this.textGroup = new THREE.Group();
             
+            // Inter Tight, set letter by letter so it can be tracked tight like the tagline
+            // (TextGeometry has no letter-spacing of its own)
+            const tracking = -0.04 * fontSize;
+            const unitsToSize = fontSize / font.data.resolution;
+            const lineSpacing = fontSize * lineHeight;
+            const totalHeight = (lines.length - 1) * lineSpacing;
+
             lines.forEach((line, index) => {
-                const textGeometry = new TextGeometry(line, {
-                    font: font,
-                    size: fontSize,
-                    height: 0.02,
-                    bevelEnabled: true,
-                    bevelThickness: 0.02,
-                    bevelSize: 0.01,
-                    bevelSegments: 5
-                });
-                
-                // Center each line horizontally
-                textGeometry.computeBoundingBox();
-                const textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
-                textGeometry.translate(-textWidth / 2, 0, 0);
-                
-                // Assign materials to different face groups
-                // TextGeometry creates groups: 0=front, 1=back, 2+=sides (if height > 0)
-                const materials = [frontMaterial.clone(), sideMaterial.clone()];
-                const textMesh = new THREE.Mesh(textGeometry, materials);
-                
-                // Position lines vertically with custom line height
-                const lineSpacing = fontSize * lineHeight;
-                const totalHeight = (lines.length - 1) * lineSpacing;
-                textMesh.position.y = (lines.length - 1 - index) * lineSpacing - totalHeight / 2;
-                
-                this.textGroup.add(textMesh);
+                const lineGroup = new THREE.Group();
+                let cursor = 0;
+                for (const char of line) {
+                    const glyph = font.data.glyphs[char];
+                    const advance = (glyph ? glyph.ha : font.data.resolution * 0.3) * unitsToSize;
+                    if (char !== ' ' && glyph) {
+                        const geometry = new TextGeometry(char, {
+                            font: font,
+                            size: fontSize,
+                            height: 0.015,
+                            bevelEnabled: true,
+                            bevelThickness: 0.01,
+                            bevelSize: 0.006,
+                            bevelSegments: 3
+                        });
+                        const mesh = new THREE.Mesh(geometry, [frontMaterial.clone(), sideMaterial.clone()]);
+                        mesh.position.x = cursor;
+                        lineGroup.add(mesh);
+                    }
+                    cursor += advance + tracking;
+                }
+                const lineWidth = cursor - tracking;
+                lineGroup.children.forEach((mesh) => { mesh.position.x -= lineWidth / 2; });
+                lineGroup.position.y = (lines.length - 1 - index) * lineSpacing - totalHeight / 2;
+                this.textGroup.add(lineGroup);
             });
             
             // Rotate 90 degrees on X axis
