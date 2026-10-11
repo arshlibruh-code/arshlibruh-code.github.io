@@ -2531,18 +2531,14 @@ function enterProjectsMode() {
     startProjectModeTextRotation();
     runProjectRevealSequence();
 }
-// A game-style stat card. Levels only set the silhouette (never shown as numbers):
-// strong on design, maps and 3D, honest about code (agents write it). Alternating
-// high and low around the ring keeps the shape spiky, like a character build.
 const skills = [
+    { name: 'AI', level: 96 },
     { name: 'DESIGN', level: 95 },
-    { name: 'CODE', level: 55 },
-    { name: 'MAPS', level: 90 },
-    { name: 'FILM', level: 65 },
-    { name: '3D/GPU', level: 85 },
-    { name: 'AI', level: 80 }
+    { name: 'CODING', level: 84 },
+    { name: 'GIS', level: 83 },
+    { name: 'VIDEO EDITING', level: 88 },
+    { name: 'CREATIVE', level: 99 }
 ];
-const SKILLS_TITLE = 'ARSHAD ✽ SPATIAL DESIGNER ✽ LVL 5';
 
 const chartCoords = [75.4, 12.88];
 const chartFlyToCoords = [75.4, 12.98];
@@ -2568,7 +2564,7 @@ const customLayer = {
         
         const skillLevels = skills.map(skill => skill.level / 100);
         const skillLabels = skills.map(skill => skill.name);
-        this.radarChart = createRadarChart(skillLevels, 5, 6, skillLabels, SKILLS_TITLE);
+        this.radarChart = createRadarChart(skillLevels, 5, 6, skillLabels);
         
         this.animationStartTime = Date.now();
         this.animationDelay = 2000;
