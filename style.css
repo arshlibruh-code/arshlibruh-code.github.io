@@ -34,7 +34,7 @@ body {
 
 .text-group-top-left {
     position: fixed;
-    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    top: calc(env(safe-area-inset-top, 0px) + 22px);
     left: 10px;
     font-family: 'Quantico', sans-serif;
     color: white;
@@ -367,7 +367,7 @@ body {
     }
 
     .text-group-top-left {
-        top: calc(env(safe-area-inset-top, 0px) + 8px);
+        top: calc(env(safe-area-inset-top, 0px) + 22px);
         left: 8px;
         max-width: calc(100% - 16px);
     }
@@ -1152,17 +1152,34 @@ body {
     }
 }
 
-/* 1px fixed strip at the very top: Safari copies its colour into the status bar.
-   The glass layer sets it to the colour of the map's top edge */
-.status-tint {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background-color: #132230;
-    pointer-events: none;
-    z-index: 1001;
+/* Phones: the status bar stays black; a soft blurred fade lets it melt into the map.
+   The look lives on a pseudo-element, which Safari ignores when tinting its bars */
+.top-fade {
+    display: none;
+}
+
+@media (max-width: 640px), (pointer: coarse) {
+    .top-fade {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        pointer-events: none;
+        z-index: 900;
+    }
+
+    .top-fade::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(#000, rgba(0, 0, 0, 0));
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        -webkit-mask-image: linear-gradient(#000 30%, transparent);
+        mask-image: linear-gradient(#000 30%, transparent);
+    }
 }
 
 /* Glass rail: the WebGL layer draws the refracting glass in the map canvas; the DOM pill
@@ -1209,7 +1226,8 @@ body {
     cursor: pointer;
 }
 
-.side-card img {
+.side-card img,
+.side-card video {
     width: 52px;
     height: 36px;
     object-fit: cover;

@@ -1539,11 +1539,44 @@ function openJourneyPopupForPoint(point, options = {}) {
 function createSideCard(project) {
     const card = document.createElement('article');
     card.className = 'info-popup-card side-card';
-    const img = document.createElement('img');
+    let img = document.createElement('img');
     img.src = normalizeAssetPath(project.image);
     img.alt = '';
     if (project.imagePosition) {
         img.style.objectPosition = project.imagePosition;
+    }
+    // a thumbnail-sized loop (about 20KB) instead of the still; it starts once the camera
+    // has landed and pauses when off screen, like the desktop cards
+    if (project.video && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const video = document.createElement('video');
+        video.src = normalizeAssetPath(project.video.replace('.mp4', '-thumb.mp4'));
+        video.poster = img.src;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.preload = 'none';
+        const play = () => {
+            if (!video.isConnected) {
+                return;
+            }
+            if (map.isMoving()) {
+                map.once('moveend', play);
+                return;
+            }
+            if (video.dataset.inView !== 'false') {
+                video.play().catch(() => {});
+            }
+        };
+        new IntersectionObserver(([entry]) => {
+            video.dataset.inView = String(entry.isIntersecting);
+            if (!entry.isIntersecting) {
+                video.pause();
+            } else if (!map.isMoving()) {
+                video.play().catch(() => {});
+            }
+        }).observe(video);
+        setTimeout(play, 400);
+        img = video;
     }
     const text = document.createElement('div');
     const title = document.createElement('b');
@@ -2777,7 +2810,7 @@ const customLayer = {
         }
 
         // only spin (and keep the map redrawing) while the chart is actually in view
-        const chartVisible = isOnScreen(chartCoords);
+        const chartVisible = isOnScreen(chartCoords, 0);
         if (this.radarChart && this.animationStartTime && chartVisible) {
             const elapsed = Date.now() - this.animationStartTime;
             
@@ -2792,7 +2825,9 @@ const customLayer = {
                 const subtleBounce = Math.min(1, easeOutCubic + overshoot);
                 
                 this.radarChart.scale.set(subtleBounce, subtleBounce, subtleBounce);
-                const baseSpeed = 0.002;
+                // phones skip the slow idle spin (it would keep the map redrawing); the
+                // spin-up after tapping SKILLS still plays everywhere
+                const baseSpeed = IS_PHONE ? 0 : 0.002;
                 let burstSpeed = 0;
                 if (this.spinBurstStartTime) {
                     const burstElapsed = (Date.now() - this.spinBurstStartTime) / 1000;
@@ -2807,7 +2842,9 @@ const customLayer = {
                     }
                 }
                 this.radarChart.rotation.y += baseSpeed + burstSpeed;
-                this.map.triggerRepaint();
+                if (baseSpeed + burstSpeed > 0 || progress < 1) {
+                    this.map.triggerRepaint();
+                }
             }
         }
         
@@ -3844,8 +3881,6 @@ const projectBuffers = {
 // soft frost, and a specular rim lit from the top left. Works in Safari, where SVG
 // backdrop refraction does not. It costs nothing while the map is idle, because the map
 // (and so the glass) only redraws when something moves.
-// The same pass samples the map's top edge once the camera settles and hands that colour
-// to a 1px fixed strip, which Safari copies into the status bar.
 const glassRail = {
     id: 'glass-rail',
     type: 'custom',
@@ -3854,7 +3889,6 @@ const glassRail = {
     onAdd(mapInstance, gl) {
         this.map = mapInstance;
         this.target = document.querySelector('.journey-button-wrapper');
-        this.statusStrip = document.querySelector('.status-tint');
         const vs = `
             attribute vec2 aPos;
             uniform vec4 uRect;
@@ -3954,7 +3988,6 @@ const glassRail = {
             new ResizeObserver(() => mapInstance.triggerRepaint()).observe(this.target);
         }
         window.addEventListener('resize', () => mapInstance.triggerRepaint());
-        mapInstance.on('idle', () => { this.sampleTop = true; mapInstance.triggerRepaint(); });
     },
 
     render(gl) {
@@ -3963,21 +3996,6 @@ const glassRail = {
         const fbW = gl.drawingBufferWidth;
         const fbH = gl.drawingBufferHeight;
         const cr = canvas.getBoundingClientRect();
-
-        // status bar colour: the average of the map's top edge, once the camera settles
-        if (this.sampleTop && this.statusStrip) {
-            this.sampleTop = false;
-            const px = new Uint8Array(4 * 16);
-            let rr = 0, gg = 0, bb = 0;
-            for (let i = 0; i < 16; i++) {
-                gl.readPixels(Math.floor((i + 0.5) * fbW / 16), fbH - 2, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px.subarray(i * 4, i * 4 + 4));
-                rr += px[i * 4]; gg += px[i * 4 + 1]; bb += px[i * 4 + 2];
-            }
-            const avg = [rr / 16, gg / 16, bb / 16].map(Math.round);
-            // a pitched camera can show black sky at the top; never hand Safari pure black
-            const luma = (0.2126 * avg[0] + 0.7152 * avg[1] + 0.0722 * avg[2]) / 255;
-            this.statusStrip.style.backgroundColor = luma < 0.06 ? '#132230' : `rgb(${avg.join(', ')})`;
-        }
 
         if (!this.program || !this.target) {
             return;
