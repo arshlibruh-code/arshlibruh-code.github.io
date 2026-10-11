@@ -816,6 +816,32 @@ function resolveJourneyImage(point) {
     return FALLBACK_POPUP_IMAGE;
 }
 
+// Card videos start one at a time, a beat apart, so several never spin up their decoders in the same frame
+const VIDEO_START_GAP_MS = 300;
+const videoStartQueue = [];
+let videoStartTimer = null;
+
+function queueVideoPlay(video) {
+    if (!videoStartQueue.includes(video)) {
+        videoStartQueue.push(video);
+    }
+    if (videoStartTimer) {
+        return;
+    }
+    const startNext = () => {
+        const next = videoStartQueue.shift();
+        if (!next) {
+            videoStartTimer = null;
+            return;
+        }
+        if (next.isConnected && next.dataset.inView !== 'false' && !document.hidden) {
+            next.play().catch(() => {});
+        }
+        videoStartTimer = setTimeout(startNext, VIDEO_START_GAP_MS);
+    };
+    startNext();
+}
+
 function createPopupCard(data, options = {}) {
     const {
         showCloseButton = false,
@@ -938,7 +964,7 @@ function createPopupCard(data, options = {}) {
                 return;
             }
             if (video.dataset.inView !== 'false') {
-                video.play().catch(() => {});
+                queueVideoPlay(video);
             }
         };
         new IntersectionObserver(([entry]) => {
@@ -946,7 +972,7 @@ function createPopupCard(data, options = {}) {
             if (!entry.isIntersecting) {
                 video.pause();
             } else if (!map.isMoving()) {
-                video.play().catch(() => {});
+                queueVideoPlay(video);
             }
         }).observe(video);
         setTimeout(startWhenStill, 400);
@@ -1580,7 +1606,7 @@ function createSideCard(project) {
                 return;
             }
             if (video.dataset.inView !== 'false') {
-                video.play().catch(() => {});
+                queueVideoPlay(video);
             }
         };
         new IntersectionObserver(([entry]) => {
@@ -1588,7 +1614,7 @@ function createSideCard(project) {
             if (!entry.isIntersecting) {
                 video.pause();
             } else if (!map.isMoving()) {
-                video.play().catch(() => {});
+                queueVideoPlay(video);
             }
         }).observe(video);
         setTimeout(play, 400);
@@ -3684,7 +3710,7 @@ if (document.readyState === 'complete') {
         } else if (!map.isMoving()) {
             videos.forEach((video) => {
                 if (video.dataset.inView !== 'false') {
-                    video.play().catch(() => {});
+                    queueVideoPlay(video);
                 }
             });
         }
