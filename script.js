@@ -2952,7 +2952,7 @@ const buttons3DLayer = {
                             center: chartFlyToCoords,
                             zoom: 10.4,
                             bearing: 0,
-                            pitch: 45,
+                            pitch: 60,
                             duration: 2000
                         });
                         customLayer.spinBurstStartTime = Date.now();
