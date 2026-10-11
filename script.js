@@ -255,19 +255,8 @@ const journey = [
 
 const projectsData = [
     {
-        id: 'project-a',
-        markerLabel: 'A',
-        title: 'This Portfolio',
-        description: 'A spatial portfolio experience built around story, interaction, and camera choreography to showcase my journey and projects.',
-        image: '/portfolio-card.webp',
-        linkUrl: 'https://github.com/arshlibruh-code',
-        linkLabel: 'VIEW ON GITHUB',
-        focusTags: ['UX', 'INTERACTION', 'MAPS', '3D'],
-        coords: [74.84063987209015, 12.811350045276598]
-    },
-    {
         id: 'project-b',
-        markerLabel: 'B',
+        markerLabel: '01',
         title: 'AEREO CLOUD',
         description: 'Production web-GIS platform for mining and drone survey teams. I set up the experimental environment, worked on-site with mine operators, and defined the specs engineering built from.',
         image: '/aereo-cloud.webp',
@@ -312,11 +301,22 @@ const projectsData = [
             'A small design team aligned with 20+ cross-functional collaborators',
             'Usability tests used to shape 3D and workflow interaction decisions'
         ],
+        coords: [74.84063987209015, 12.811350045276598]
+    },
+    {
+        id: 'project-d',
+        markerLabel: '02',
+        title: 'HOLISION',
+        description: 'Live terrain cut and fill in the browser. Real elevation tiles streamed and decoded, custom GLSL shaders, contours and volumes computed as you work.',
+        image: '/holision.webp',
+        linkUrl: 'https://holision.pages.dev',
+        linkLabel: 'VIEW LIVE',
+        focusTags: ['TERRAIN', 'THREE.JS', 'GLSL'],
         coords: [74.81237025960675, 12.896946186306437]
     },
     {
         id: 'project-c',
-        markerLabel: 'C',
+        markerLabel: '03',
         title: 'MBRT',
         description: 'NLP to 6 specialized map agents. Natural language drives routes, isochrones, buffers, polygons, and elevation profiles, all live in Mapbox.',
         image: '/mbrt.webp',
@@ -326,37 +326,15 @@ const projectsData = [
         coords: [74.79382795128464, 12.985018764409375]
     },
     {
-        id: 'project-d',
-        markerLabel: 'D',
-        title: 'HOLISION',
-        description: 'Live terrain cut and fill in the browser. Real elevation tiles streamed and decoded, custom GLSL shaders, contours and volumes computed as you work.',
-        image: '/holision.webp',
-        linkUrl: 'https://holision.pages.dev',
-        linkLabel: 'VIEW LIVE',
-        focusTags: ['TERRAIN', 'THREE.JS', 'GLSL'],
+        id: 'project-a',
+        markerLabel: '04',
+        title: 'This Portfolio',
+        description: 'A spatial portfolio experience built around story, interaction, and camera choreography to showcase my journey and projects.',
+        image: '/portfolio-card.webp',
+        linkUrl: 'https://github.com/arshlibruh-code',
+        linkLabel: 'VIEW ON GITHUB',
+        focusTags: ['UX', 'INTERACTION', 'MAPS', '3D'],
         coords: [74.77493613634593, 13.073059748410813]
-    },
-    {
-        id: 'project-e',
-        markerLabel: 'E',
-        title: 'EFFECX',
-        description: 'WebGPU-native real-time video effects. GPU compute shaders, depth matte styling, shader filters, deterministic CFR export.',
-        image: '/effecx.webp',
-        linkUrl: 'https://github.com/arshlibruh-code/effecx',
-        linkLabel: 'VIEW ON GITHUB',
-        focusTags: ['VISUAL ENGINEERING', 'WEBGPU', 'VIDEO'],
-        coords: [74.75505299252845, 13.160927390140543]
-    },
-    {
-        id: 'project-f',
-        markerLabel: 'F',
-        title: 'FNDASH',
-        description: 'Full browser-based BI dashboard with a ReAct AI agent (12 tools, SSE streaming). No server, no build step. MapLibre GL maps, D3 charts, KPI cards, map sync across panels.',
-        image: '/fndash.webp',
-        linkUrl: 'https://github.com/arshlibruh-code/fndash',
-        linkLabel: 'VIEW ON GITHUB',
-        focusTags: ['UX', 'FULL-STACK', 'DASHBOARD'],
-        coords: [74.73175275237745, 13.247902636130817]
     }
 ];
 
