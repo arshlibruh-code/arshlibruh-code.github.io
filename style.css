@@ -735,6 +735,12 @@ body {
     line-height: 1.4;
 }
 
+.project-detail-block-body a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
 .project-detail-stack {
     color: rgba(255, 255, 255, 0.88);
 }

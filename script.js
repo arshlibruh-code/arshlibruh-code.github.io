@@ -317,11 +317,11 @@ const projectsData = [
             },
             {
                 heading: 'Underneath',
-                body: '3D camera orchestration, underground views and multi-step digitization, defined as interaction models and built as state machines rather than left as specs. A design system, UX process and research practice set up from zero and scaled across three products. Aereo Go put live map data on the phones field operators already carried, replacing printed maps.'
+                body: '3D camera orchestration, underground views and multi-step digitization, defined as interaction models and built as state machines rather than left as specs. A design system, UX process and research practice set up from zero and scaled across three products. <a href="https://play.google.com/store/apps/details?id=io.aereo.go" target="_blank" rel="noopener">Aereo Go</a> put live map data on the phones field operators already carried, replacing printed maps.'
             }
         ],
         myRole: 'Product designer, end to end: field research, specs, interaction models, the design system, and prototypes in code on real data. I lead a small design team of full-time designers and interns.',
-        stack: 'MapLibre, Three.js, JavaScript, Vite, HTML/CSS',
+        stack: 'React, TypeScript, Vite, CesiumJS, OpenLayers, Three.js, Turf, proj4',
         impactPlaceholders: [
             'Desktop GIS workflows moved into the browser',
             'DGPS walkdowns replaced by drone volumetrics',
@@ -359,6 +359,14 @@ const projectsData = [
             {
                 heading: 'Design decisions',
                 body: 'It never merges: a person clicks merge, always. It stops at two review gates, before the code and after it, and waits at both. It only counts a review as done when someone replies in the thread, so approval is always a visible act. It reads the product\'s own manuals, so it never asks the team what an iteration is.'
+            },
+            {
+                heading: 'How I work with AI',
+                body: 'I design in code by directing agents, mostly Claude Code and Codex. Before: a spec in a doc that engineers read and interpret. After: a working prototype on real data that beta users can click. The rules an agent must never break live in a file it reads every session, and six months of my own sessions are mined into a notebook of lessons by domain, so a mistake gets paid for once. For visual calls I have it render a sheet of options side by side, and I pick.'
+            },
+            {
+                heading: 'Where I overrule it',
+                body: 'It is fast at variations and bad at knowing when to stop. On this site it kept chasing an iOS status bar effect that Safari ignores; I called it and kept the bar black. It also states plausible things that are not true, so nothing it says about the world ships unchecked. Taste, scope and the points where a person must approve stay with me, the same line this teammate is built on.'
             },
             {
                 heading: 'Where it is now',
@@ -657,7 +665,7 @@ function openProjectDetailModal(project) {
         if (section?.body) {
             const blockBody = document.createElement('p');
             blockBody.className = 'project-detail-block-body';
-            blockBody.textContent = section.body;
+            blockBody.innerHTML = section.body;
             block.appendChild(blockBody);
         }
 
