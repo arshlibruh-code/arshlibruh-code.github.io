@@ -2531,13 +2531,15 @@ function enterProjectsMode() {
     startProjectModeTextRotation();
     runProjectRevealSequence();
 }
+// Levels only set the silhouette (never shown as numbers): strong on design,
+// maps and 3D, honest about code (agents write it), alternating so the shape is spiky.
 const skills = [
-    { name: 'AI', level: 96 },
     { name: 'DESIGN', level: 95 },
-    { name: 'CODING', level: 84 },
-    { name: 'GIS', level: 83 },
-    { name: 'VIDEO EDITING', level: 88 },
-    { name: 'CREATIVE', level: 99 }
+    { name: 'CODE', level: 55 },
+    { name: 'MAPS', level: 90 },
+    { name: 'FILM', level: 65 },
+    { name: '3D/GPU', level: 85 },
+    { name: 'AI', level: 80 }
 ];
 
 const chartCoords = [75.4, 12.88];
