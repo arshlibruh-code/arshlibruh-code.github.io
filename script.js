@@ -2535,9 +2535,9 @@ function enterProjectsMode() {
 // maps and 3D, honest about code (agents write it), alternating so the shape is spiky.
 const skills = [
     { name: 'DESIGN', level: 95 },
-    { name: 'CODE', level: 55 },
-    { name: 'MAPS', level: 90 },
     { name: 'FILM', level: 85 },
+    { name: 'MAPS', level: 90 },
+    { name: 'CODE', level: 55 },
     { name: '3D/GPU', level: 85 },
     { name: 'AI', level: 80 }
 ];
