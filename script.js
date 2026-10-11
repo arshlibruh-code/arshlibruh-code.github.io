@@ -386,17 +386,6 @@ const projectsData = [
         linkLabel: 'VIEW LIVE',
         focusTags: ['LIVE VISUALS', 'WEBGL', 'AUDIO'],
         coords: [74.73175275237745, 13.247902636130817]
-    },
-    {
-        id: 'project-a',
-        markerLabel: '07',
-        title: 'This Portfolio',
-        description: 'A spatial portfolio experience built around story, interaction, and camera choreography to showcase my journey and projects.',
-        image: '/portfolio-card.webp',
-        linkLabel: 'CURRENTLY VIEWING',
-        linkBehavior: 'here',
-        focusTags: ['UX', 'INTERACTION', 'MAPS', '3D'],
-        coords: [74.708, 13.335]
     }
 ];
 
@@ -858,14 +847,7 @@ function createPopupCard(data, options = {}) {
         body.appendChild(description);
     }
 
-    if (data.linkBehavior === 'here') {
-        // You're already inside it: a label, not a link
-        const here = document.createElement('span');
-        here.className = 'info-popup-link';
-        here.style.cursor = 'default';
-        here.textContent = data.linkLabel || 'CURRENTLY VIEWING';
-        body.appendChild(here);
-    } else if (data.linkUrl || data.linkBehavior === 'modal') {
+    if (data.linkUrl || data.linkBehavior === 'modal') {
         const cta = document.createElement('a');
         cta.className = 'info-popup-link';
         cta.href = data.linkBehavior === 'modal' ? '#' : data.linkUrl;
@@ -2965,9 +2947,10 @@ const buttons3DLayer = {
         this.raycastCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
         
         // Click handler
-        this.handleClick = (e) => {
+        // Which 3D button is under the pointer (-1 for none); shared by click and hover
+        this.buttonIndexAt = (e) => {
             if (!this.buttonMeshes || this.buttonMeshes.length === 0 || !this.camera.projectionMatrix) {
-                return;
+                return -1;
             }
             
             const rect = map.getCanvas().getBoundingClientRect();
@@ -3005,9 +2988,9 @@ const buttons3DLayer = {
                 intersects = this.raycaster.intersectObjects(allClickableMeshes, true);
             }
             
+            let buttonIndex = -1;
             if (intersects.length > 0) {
                 const clickedObject = intersects[0].object;
-                let buttonIndex = -1;
                 
                 // Check if clicked object is a text mesh
                 const textIndex = this.textMeshes.indexOf(clickedObject);
@@ -3028,35 +3011,53 @@ const buttons3DLayer = {
                     }
                 }
                 
-                if (buttonIndex !== -1) {
-                    this.animateButtonPress(buttonIndex);
-                    
-                    // Button 0 is the main journey button - trigger journey toggle
-                    if (buttonIndex === 0) {
-                        toggleJourney();
-                    }
-                    // Button 1 (PROJECTS) - enter projects mode (manual exploration)
-                    else if (buttonIndex === 1) {
-                        gtag('event', 'projects_opened');
-                        enterProjectsMode();
-                    }
-                    // Button 2 is SKILLS - fly to chart
-                    else if (buttonIndex === 2) {
-                        gtag('event', 'skills_opened');
-                        map.flyTo({
-                            center: chartFlyToCoords,
-                            zoom: 10.4,
-                            bearing: 0,
-                            pitch: 60,
-                            duration: 2000
-                        });
-                        customLayer.spinBurstStartTime = Date.now();
-                    }
+            }
+            return buttonIndex;
+        };
+
+        this.handleClick = (e) => {
+            const buttonIndex = this.buttonIndexAt(e);
+            if (buttonIndex !== -1) {
+                this.animateButtonPress(buttonIndex);
+                
+                // Button 0 is the main journey button - trigger journey toggle
+                if (buttonIndex === 0) {
+                    toggleJourney();
+                }
+                // Button 1 (PROJECTS) - enter projects mode (manual exploration)
+                else if (buttonIndex === 1) {
+                    gtag('event', 'projects_opened');
+                    enterProjectsMode();
+                }
+                // Button 2 is SKILLS - fly to chart
+                else if (buttonIndex === 2) {
+                    gtag('event', 'skills_opened');
+                    map.flyTo({
+                        center: chartFlyToCoords,
+                        zoom: 10.4,
+                        bearing: 0,
+                        pitch: 60,
+                        duration: 2000
+                    });
+                    customLayer.spinBurstStartTime = Date.now();
                 }
             }
         };
         
         map.getCanvas().addEventListener('click', this.handleClick);
+
+        // The map's grab hand would otherwise win over the 3D buttons
+        let hoverQueued = false;
+        map.getCanvas().addEventListener('mousemove', (e) => {
+            if (hoverQueued || e.buttons !== 0) {
+                return;
+            }
+            hoverQueued = true;
+            requestAnimationFrame(() => {
+                hoverQueued = false;
+                map.getCanvas().style.cursor = this.buttonIndexAt(e) !== -1 ? 'pointer' : '';
+            });
+        });
         
         // Load font for button text
         const fontLoader = new FontLoader();
