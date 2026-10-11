@@ -1196,3 +1196,64 @@ body {
 .has-glass .journey-progress-bar {
     background: rgba(8, 155, 223, 0.45);
 }
+
+/* Phone side cards: thumbnail + title + tags beside each marker, a leader line to it */
+.info-popup-card.side-card {
+    width: 156px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px;
+    border-radius: 7px;
+    overflow: visible;
+    cursor: pointer;
+}
+
+.side-card img {
+    width: 52px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex: none;
+}
+
+.side-card b {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+}
+
+.side-card > div {
+    min-width: 0;
+}
+
+.side-card i {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-style: normal;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    opacity: 0.6;
+    margin-top: 2px;
+}
+
+.side-card::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.maplibregl-popup-anchor-right .side-card::after {
+    right: -15px;
+}
+
+.maplibregl-popup-anchor-left .side-card::after {
+    left: -15px;
+}

@@ -93,6 +93,11 @@ const map = new maplibregl.Map({
         }
     }
 });
+// localhost only: expose the map so test scripts can stage cameras
+if (location.hostname === 'localhost') {
+    window.__map = map;
+}
+
 
 // The 3D hello block is about 7.25 model units wide (36 km at 5000 m per unit). A fixed
 // zoom clips it on narrow phones, so the landing zoom is fitted to the screen width.
@@ -1123,6 +1128,21 @@ function getProjectOverviewTarget() {
     }
 
     const isMobile = window.innerWidth <= 640;
+    if (isMobile) {
+        // Phones: turn the camera so the coast runs top to bottom; the markers spread
+        // down the screen and the side cards fit on the sea and land either side
+        const first = projectsData[0].coords;
+        const last = projectsData[projectsData.length - 1].coords;
+        const coastBearing = calculateBearing(first, last);
+        const phoneCamera = map.cameraForBounds(getProjectBounds(), {
+            padding: { top: 150, bottom: 150, left: 70, right: 70 },
+            bearing: coastBearing
+        });
+        const phoneCenter = phoneCamera && toLngLatArray(phoneCamera.center);
+        if (phoneCenter) {
+            return { center: phoneCenter, zoom: phoneCamera.zoom, pitch: 35, bearing: coastBearing };
+        }
+    }
     const overviewBearing = isMobile ? PROJECT_OVERVIEW_BEARING_MOBILE : PROJECT_OVERVIEW_BEARING;
 
     const camera = map.cameraForBounds(getProjectBounds(), {
@@ -1514,6 +1534,67 @@ function openJourneyPopupForPoint(point, options = {}) {
     return popup;
 }
 
+// Phones: a compact side card (thumbnail, title, tags) beside each marker, alternating sea
+// side and land side with a short leader line. Tapping it does what VIEW does on desktop.
+function createSideCard(project) {
+    const card = document.createElement('article');
+    card.className = 'info-popup-card side-card';
+    const img = document.createElement('img');
+    img.src = normalizeAssetPath(project.image);
+    img.alt = '';
+    if (project.imagePosition) {
+        img.style.objectPosition = project.imagePosition;
+    }
+    const text = document.createElement('div');
+    const title = document.createElement('b');
+    title.textContent = project.title;
+    const tags = document.createElement('i');
+    tags.textContent = (project.focusTags || []).slice(0, 2).join(' • ');
+    text.append(title, tags);
+    card.append(img, text);
+    card.addEventListener('click', (event) => {
+        event.stopPropagation();
+        if (typeof gtag === 'function') {
+            gtag('event', 'project_popup_open', { project_id: project.id, project_title: project.title });
+        }
+        if (project.linkBehavior === 'modal') {
+            openProjectDetailModal(project);
+        } else if (project.linkUrl) {
+            window.open(project.linkUrl, '_blank', 'noopener');
+        }
+    });
+    return card;
+}
+
+function openProjectSideCard(project, lngLat) {
+    const index = projectsData.findIndex((item) => item.id === project.id);
+    const seaSide = index % 2 === 0;
+    const content = createSideCard(project);
+    const popup = new maplibregl.Popup({
+        anchor: seaSide ? 'right' : 'left',
+        offset: seaSide ? [-16, 0] : [16, 0],
+        maxWidth: '170px',
+        closeButton: false,
+        closeOnClick: false,
+        className: 'side-card-popup'
+    })
+        .setLngLat(lngLat)
+        .setDOMContent(content);
+    popup.on('open', () => {
+        activeProjectPopups.add(popup);
+        activeProjectPopupById.set(project.id, popup);
+        animatePopupCardOpen(content);
+    });
+    popup.on('close', () => {
+        activeProjectPopups.delete(popup);
+        if (activeProjectPopupById.get(project.id) === popup) {
+            activeProjectPopupById.delete(project.id);
+        }
+    });
+    popup.addTo(map);
+    return popup;
+}
+
 function openProjectPopup(project, options = {}) {
     const { lngLat = project.coords } = options;
     const existingPopup = activeProjectPopupById.get(project.id);
@@ -1522,6 +1603,9 @@ function openProjectPopup(project, options = {}) {
     }
 
     let popup = null;
+    if (window.innerWidth <= 640) {
+        return openProjectSideCard(project, lngLat);
+    }
     const content = createPopupCard(project, {
         variant: 'project',
         showCloseButton: true,
