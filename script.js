@@ -53,7 +53,9 @@ const map = new maplibregl.Map({
             satellite: {
                 tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
                 tileSize: 256,
-                maxzoom: 19,
+                // Esri has no z19 around Dehradun (St. Judes, Doon, Arshli Bridge) and a pitched
+                // camera asks for one level more than the centre, so cap at 18 and let MapLibre stretch it
+                maxzoom: 18,
                 attribution: 'Esri, Maxar, Earthstar Geographics',
                 type: 'raster'
             }
@@ -307,6 +309,7 @@ const projectsData = [
         id: 'project-d',
         markerLabel: '02',
         title: 'HOLISION',
+        imagePosition: 'center bottom',
         description: 'Live terrain cut and fill in the browser. Real elevation tiles streamed and decoded, custom GLSL shaders, contours and volumes computed as you work.',
         image: '/holision.webp',
         linkUrl: 'https://holision.pages.dev',
@@ -318,6 +321,7 @@ const projectsData = [
         id: 'project-c',
         markerLabel: '03',
         title: 'MBRT',
+        imagePosition: 'center bottom',
         description: 'NLP to 6 specialized map agents. Natural language drives routes, isochrones, buffers, polygons, and elevation profiles, all live in Mapbox.',
         image: '/mbrt.webp',
         linkUrl: 'https://github.com/arshlibruh-code/MBRT',
@@ -752,6 +756,9 @@ function createPopupCard(data, options = {}) {
     const image = document.createElement('img');
     image.className = 'info-popup-image';
     image.src = normalizeAssetPath(data.image);
+    if (data.imagePosition) {
+        image.style.objectPosition = data.imagePosition;
+    }
     image.alt = data.title || 'Preview';
     image.loading = 'lazy';
     image.onerror = () => {
