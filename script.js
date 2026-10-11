@@ -243,7 +243,7 @@ const journey = [
     {
         name: 'Arshli Bridge',
         coords: [77.80306340271673, 30.556156968139717],
-        description: 'Found an unnamed bridge at the UK-HP border. Couldn\'t find it on Maps, so I put it there and named it.',
+        description: 'Found an unnamed bridge on the Uttarakhand-Himachal border. Couldn\'t find it on Maps, so I put it there and named it.',
         image: 'arshlibridge.webp',
         date: 'Stuff I find interesting',
         zoom: 18,
