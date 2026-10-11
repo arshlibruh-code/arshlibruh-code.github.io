@@ -3329,10 +3329,10 @@ map.on('load', () => {
     checkAndStartTextRotation();
 });
 
-// Idle auto-start: 5s with no input shows a 5..1 countdown on the journey button,
+// Idle auto-start: 10s with no input shows a 5..1 countdown on the journey button,
 // then enters Projects mode. Any input cancels it. Once per visit, and never after
 // the visitor has started the Journey or Projects themselves.
-const AUTO_PROJECTS_IDLE_MS = 5000;
+const AUTO_PROJECTS_IDLE_MS = 10000;
 let autoProjectsDone = false;
 let autoIdleTimer = null;
 let autoCountdownTimer = null;
