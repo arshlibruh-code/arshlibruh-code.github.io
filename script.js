@@ -3239,3 +3239,71 @@ map.on('load', () => {
     updateJourneyText(dynamicTexts[0]);
     checkAndStartTextRotation();
 });
+
+// Idle auto-start: 5s with no input shows a 5..1 countdown on the journey button,
+// then enters Projects mode. Any input cancels it. Once per visit, and never after
+// the visitor has started the Journey or Projects themselves.
+const AUTO_PROJECTS_IDLE_MS = 5000;
+let autoProjectsDone = false;
+let autoIdleTimer = null;
+let autoCountdownTimer = null;
+
+function autoProjectsAllowed() {
+    if (appMode !== APP_MODES.IDLE || isJourneyActive) {
+        autoProjectsDone = true;
+    }
+    return !autoProjectsDone && !prefersReducedMotion && !isProjectDetailModalOpen();
+}
+
+function cancelAutoCountdown() {
+    if (autoCountdownTimer) {
+        clearInterval(autoCountdownTimer);
+        autoCountdownTimer = null;
+        updateJourneyButtonText();
+    }
+}
+
+function startAutoCountdown() {
+    const button = document.getElementById('journey-toggle');
+    if (!button || !autoProjectsAllowed()) {
+        return;
+    }
+    let remaining = 5;
+    const show = () => { button.textContent = `PROJECTS IN ${remaining}`; };
+    show();
+    autoCountdownTimer = setInterval(() => {
+        remaining--;
+        if (remaining > 0) {
+            show();
+            return;
+        }
+        clearInterval(autoCountdownTimer);
+        autoCountdownTimer = null;
+        autoProjectsDone = true;
+        gtag('event', 'auto_projects');
+        enterProjectsMode();
+    }, 1000);
+}
+
+function armAutoProjects() {
+    clearTimeout(autoIdleTimer);
+    if (autoProjectsAllowed()) {
+        autoIdleTimer = setTimeout(startAutoCountdown, AUTO_PROJECTS_IDLE_MS);
+    }
+}
+
+['mousemove', 'keydown', 'wheel', 'touchstart', 'pointerdown'].forEach((type) => {
+    window.addEventListener(type, () => {
+        if (autoProjectsDone) {
+            return;
+        }
+        cancelAutoCountdown();
+        armAutoProjects();
+    }, { passive: true, capture: true });
+});
+
+if (document.readyState === 'complete') {
+    armAutoProjects();
+} else {
+    window.addEventListener('load', armAutoProjects);
+}
