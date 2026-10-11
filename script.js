@@ -361,11 +361,11 @@ const projectsData = [
 ];
 
 const dynamicTexts = [
-    'designer who codes. coder who designs.',
+    'I design tools for people who work with maps, 3D and data.',
     'I make maps do things they weren\'t supposed to.',
     'product design × geospatial × whatever\'s interesting.',
-    'I embed in hard problems and ship until they\'re solved.',
-    'Using AI to move faster and build smarter.',
+    'I start where the work happens, not on a screen.',
+    'I design how teams work with AI, and where the human stays in control.',
 ];
 let currentTextIndex = 0;
 
