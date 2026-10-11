@@ -2691,7 +2691,7 @@ const text3DLayer = {
             // Text lines
             const lines = ['HEY! I\'M ARSHAD', 'NICE TO MEET YOU'];
             const fontSize = 0.5;
-            const lineHeight = 1.2; // Control line spacing (multiplier of fontSize)
+            const lineHeight = 1.45; // Control line spacing (multiplier of fontSize)
             
             // Create text group
             this.textGroup = new THREE.Group();
@@ -2699,7 +2699,7 @@ const text3DLayer = {
             // Inter Tight, set letter by letter so it can be tracked tight like the tagline
             // (TextGeometry has no letter-spacing of its own)
             const tracking = -0.04 * fontSize;
-            const wordSpacing = 0.5 * fontSize;
+            const wordSpacing = 0.8 * fontSize;
             const unitsToSize = fontSize / font.data.resolution;
             const lineSpacing = fontSize * lineHeight;
             const totalHeight = (lines.length - 1) * lineSpacing;
