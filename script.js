@@ -881,8 +881,8 @@ function createPopupCard(data, options = {}) {
         video.preload = 'none';
         video.setAttribute('aria-label', data.title || 'Preview');
         card.appendChild(video);
-        // Start only once the camera has landed, so decoding never competes with the flight,
-        // and only one card plays at a time
+        // Start only once the camera has landed, so decoding never competes with the flight.
+        // Every open card plays; one that is off screen pauses until it is back in view.
         const startWhenStill = () => {
             if (!video.isConnected) {
                 return;
@@ -891,13 +891,18 @@ function createPopupCard(data, options = {}) {
                 map.once('moveend', startWhenStill);
                 return;
             }
-            document.querySelectorAll('video.info-popup-image').forEach((other) => {
-                if (other !== video) {
-                    other.pause();
-                }
-            });
-            video.play().catch(() => {});
+            if (video.dataset.inView !== 'false') {
+                video.play().catch(() => {});
+            }
         };
+        new IntersectionObserver(([entry]) => {
+            video.dataset.inView = String(entry.isIntersecting);
+            if (!entry.isIntersecting) {
+                video.pause();
+            } else if (!map.isMoving()) {
+                video.play().catch(() => {});
+            }
+        }).observe(video);
         setTimeout(startWhenStill, 400);
     } else {
         card.appendChild(image);
@@ -3441,8 +3446,12 @@ if (document.readyState === 'complete') {
         const videos = document.querySelectorAll('video.info-popup-image');
         if (document.hidden) {
             videos.forEach((video) => video.pause());
-        } else if (videos.length && !map.isMoving()) {
-            videos[videos.length - 1].play().catch(() => {});
+        } else if (!map.isMoving()) {
+            videos.forEach((video) => {
+                if (video.dataset.inView !== 'false') {
+                    video.play().catch(() => {});
+                }
+            });
         }
     });
 })();
