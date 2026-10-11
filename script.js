@@ -3383,8 +3383,10 @@ function autoProjectsAllowed() {
 function resetCountdownBar() {
     const bar = document.querySelector('.journey-progress-bar');
     if (bar) {
-        bar.style.transition = '';
+        bar.style.transition = 'none';
         bar.style.width = '0%';
+        void bar.offsetWidth;
+        bar.style.transition = '';
     }
 }
 
