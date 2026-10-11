@@ -155,7 +155,7 @@ const journey = [
     {
         name: 'Dehradun',
         coords: [78.04187306639645, 30.324297991273333],
-        description: 'Born in the foothills. Mountains were just the default backdrop.',
+        description: 'Born in the foothills.',
         image: 'dehradun.webp',
         date: '1996',
         zoom: 12,
@@ -177,7 +177,7 @@ const journey = [
     {
         name: 'Doon Business School',
         coords: [77.8632908995369, 30.37684055270396],
-        description: 'Three years studying business in the hills. Mostly figuring out what I actually wanted to do.',
+        description: 'Business degree. Mostly figuring myself out.',
         image: 'doonbusiness.webp',
         date: '2015-2018',
         zoom: 17,
@@ -199,7 +199,7 @@ const journey = [
     {
         name: 'Teamlease',
         coords: [77.62494594852494, 12.94052546680988],
-        description: 'First job in sales. Classic post-MBA entry point.',
+        description: 'First job: sales.',
         image: 'teamlease.webp',
         date: '2020-2021',
         zoom: 17,
@@ -210,7 +210,7 @@ const journey = [
     {
         name: 'Ignitho / Piqual',
         coords: [77.650889974173, 12.920106662087223],
-        description: 'First UI/UX role. Remote work with a UK-based agency during COVID times.',
+        description: 'First design job, remote, mid-COVID.',
         image: 'ignitho.webp',
         date: 'Jan 2021 - Nov 2021',
         zoom: 18,
@@ -221,7 +221,7 @@ const journey = [
     {
         name: 'Aereo',
         coords: [77.6042, 13.0725],
-        description: 'Joined Aereo, where I fell in love with maps and geospatial tech.',
+        description: 'Where I fell for maps.',
         image: 'aereo.webp',
         date: 'Nov 2021 - Present',
         zoom: 17,
@@ -232,7 +232,7 @@ const journey = [
     {
         name: 'Pondicherry',
         coords: [79.83074593230793, 11.902762125054846],
-        description: 'Biked Bangalore to Pondicherry. Coastal ride, French-colony vibes.',
+        description: 'Biked Bangalore to Pondicherry.',
         image: 'pondicherry.webp',
         date: 'Stuff I find interesting',
         zoom: 14,
@@ -243,7 +243,7 @@ const journey = [
     {
         name: 'Arshli Bridge',
         coords: [77.80306340271673, 30.556156968139717],
-        description: 'Found an unnamed bridge on the Uttarakhand-Himachal border. Couldn\'t find it on Maps, so I put it there and named it.',
+        description: 'Found a bridge missing from Maps. Added it, named it.',
         image: 'arshlibridge.webp',
         date: 'Stuff I find interesting',
         zoom: 18,
@@ -268,39 +268,35 @@ const projectsData = [
         focusTags: ['UX', 'MAPS', '3D WORKFLOWS'],
         hideTitle: true,
         showDetailTags: false,
-        wipNotice: 'THIS PAGE IS WORK IN PROGRESS',
-        intro: 'Aereo Cloud is a production web-GIS platform used by mining and drone survey teams. I own the experimental environment (<a href="https://experiments.cloud.aereo.co.in" target="_blank" rel="noopener noreferrer" style="color:inherit;opacity:0.7;text-underline-offset:3px;">experiments.cloud.aereo.co.in</a>), visit active mine sites to work alongside operators, translate what I find into engineering-ready specs, and ship the result. The loop is: field discovery, spec, build, validate, repeat.',
+        intro: 'Aereo Cloud is a production web-GIS platform for mining and drone survey teams. For nearly five years I have designed it end to end: research on mine sites, the specs engineering builds from, and the design system underneath. Three stories carry most of it.',
         sections: [
             {
                 heading: 'Context',
-                body: 'The product needed to serve both desktop and mobile users working with spatial data, viewing maps, switching into 3D, and running workflows such as digitization. The team was cross-functional across UX, engineering, project management, and data science. I owned UX research, design, and process so the product could evolve without losing consistency.'
+                body: 'The users are technical specialists: surveyors, mine planners, field operators. The interface is structured data: point clouds, terrain, coordinate systems, 3D views. The team is 20+ engineers, PMs and data scientists.'
             },
             {
-                heading: 'Problem',
-                body: 'We had to make one platform that felt right for power users and still approachable for others. Map and 3D interactions had to be learnable, while workflows like 3D view and digitization had to remain reliable and predictable. Without a shared UX system, alignment across design and engineering was difficult.'
+                heading: '1. Desktop GIS, in a browser',
+                body: 'Work that needed Global Mapper and AutoCAD on expensive hardware now runs in a browser, on any device, with no setup. I wrote the specs for point cloud tools, DXF support and terrain analysis, backed by competitive research across Propeller, Strayos, Maptek and Datamine.'
             },
             {
-                heading: 'Approach',
-                body: 'I grounded the work in research through user interviews, competitive review, and usability testing. Research informed persona definition, problem framing, and prioritization. I established a repeatable UX workflow from discovery to high-fidelity prototypes and built a system engineering could implement.'
+                heading: '2. Drones instead of walking the pile',
+                body: 'On site visits with mining and survey teams I watched stockpiles measured by walking them with DGPS. We replaced that with drone-based volumetrics processed in the cloud, accurate from the office.'
             },
             {
-                heading: 'Workflow',
-                body: 'A core focus was orchestration between maps, 3D, and interaction. I defined patterns for switching between 2D and 3D, controlling camera behavior, and guiding users through multi-step flows like digitization. Wireframes and prototypes centered on flow clarity so we could validate before build.'
+                heading: '3. An experiments lane before the sprint',
+                body: 'Engineering wanted everything through the sprint; product wanted to move faster than it. I set up and run an experimental environment where ideas ship in code on real data to beta users and pass a go/no-go gate before they enter the sprint.'
             },
             {
-                heading: 'Challenges and Tradeoffs',
-                body: 'Balancing depth for expert users with clarity for newer users was a constant tradeoff. Mobile constraints required dedicated research and interaction adjustments. Coordinating a small design team of full-time designers and interns with 20+ engineers, PMs, and data scientists required clear documentation, visible decisions, and a shared delivery process.'
-            },
-            {
-                heading: 'Outcome and Next Steps',
-                body: 'We shipped a web-GIS platform with an established UX process, research practice, and design system. The product now supports day-to-day map and 3D workflows, including digitization. Next steps included extending mobile workflows, expanding the system as product scope grew, and keeping research tied to roadmap decisions.'
+                heading: 'Underneath',
+                body: '3D camera orchestration, underground views and multi-step digitization, defined as interaction models and built as state machines rather than left as specs. A design system, UX process and research practice set up from zero and scaled across three products. Aereo Go put live map data on the phones field operators already carried, replacing printed maps.'
             }
         ],
-        myRole: 'I led UX research, ideation, design, and delivery for Aereo Cloud. I ran the research, created wireframes and high-fidelity prototypes, and established the UX process and design system. I led a small design team of full-time designers and interns and set how design worked with 20+ engineers, PMs, and data scientists.',
+        myRole: 'Product designer, end to end: field research, specs, interaction models, the design system, and prototypes in code on real data. I lead a small design team of full-time designers and interns.',
         stack: 'MapLibre, Three.js, JavaScript, Vite, HTML/CSS',
         impactPlaceholders: [
-            'A small design team aligned with 20+ cross-functional collaborators',
-            'Usability tests used to shape 3D and workflow interaction decisions'
+            'Desktop GIS workflows moved into the browser',
+            'DGPS walkdowns replaced by drone volumetrics',
+            'One design system across three products'
         ],
         coords: [74.84063987209015, 12.811350045276598]
     },
