@@ -368,6 +368,7 @@ const projectsData = [
         markerLabel: '05',
         title: 'MBRT',
         imagePosition: 'center bottom',
+        video: '/mbrt.mp4',
         description: 'NLP to 6 specialized map agents. Natural language drives routes, isochrones, buffers, polygons, and elevation profiles, all live in Mapbox.',
         image: '/mbrt.webp',
         linkUrl: 'https://github.com/arshlibruh-code/MBRT',
