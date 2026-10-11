@@ -259,6 +259,7 @@ const projectsData = [
         id: 'project-b',
         markerLabel: '01',
         title: 'AEREO CLOUD',
+        group: 'dayJob',
         description: 'Production web-GIS platform for mining and drone survey teams. I set up the experimental environment, worked on-site with mine operators, and defined the specs engineering built from.',
         image: '/aereo-cloud.webp',
         detailImage: '/aereo-cloud-cover.webp',
@@ -304,6 +305,7 @@ const projectsData = [
         id: 'project-g',
         markerLabel: '02',
         title: 'AI TEAMMATE',
+        group: 'dayJob',
         description: 'An AI teammate our developers are piloting. Hand it a Jira ticket in Slack: it asks before it assumes, writes the analysis, opens the merge requests, and stops at two human review gates. It never merges.',
         image: '/ai-teammate.webp',
         video: '/ai-teammate.mp4',
@@ -1744,6 +1746,7 @@ function runProjectRevealSequence() {
                 smoothedBearing = interpolateBearing(smoothedBearing, targetBearing, PROJECT_BEARING_SMOOTHING);
             } else if (!overviewBlendStarted) {
                 overviewBlendStarted = true;
+                projectBuffers.show();
                 overviewBlendStartBearing = smoothedBearing;
             }
 
@@ -1810,6 +1813,7 @@ function runProjectRevealSequence() {
                 showProjectMarker(project);
                 openProjectPopup(project);
             });
+            projectBuffers.show();
 
             if (!overviewTarget) {
                 const isMobile = window.innerWidth <= 640;
@@ -2565,6 +2569,7 @@ function exitProjectsMode(options = {}) {
         return;
     }
 
+    projectBuffers.hide();
     closeProjectDetailModal();
     stopProjectFlight();
     if (animateProjectItemsExit) {
@@ -3302,6 +3307,7 @@ map.on('style.load', () => {
     map.addLayer(customLayer);
     map.addLayer(text3DLayer);
     map.addLayer(buttons3DLayer);
+    projectBuffers.addLayers();
 });
 
 map.on('load', () => {
@@ -3455,3 +3461,187 @@ if (document.readyState === 'complete') {
         }
     });
 })();
+
+
+// Project buffers: a GIS-style buffer around each group of project markers, drawn once
+// the last project is out and the camera heads to its resting view. DAY JOB (work) in the
+// accent blue, AFTER HOURS (personal) in icy white. Native map layers, so the outline
+// sits on the globe like the imagery: a faint fill, a soft inner rim glow, and a dashed
+// edge that draws itself, then marches slowly.
+const BUFFER_RADIUS_M = 4000;
+const BUFFER_GROUPS = [
+    { key: 'dayJob', label: 'DAY JOB', color: '#089BDF' },
+    { key: 'afterHours', label: 'AFTER HOURS', color: '#DDE7EC' }
+];
+// MapLibre's marching-ants steps (units are line widths)
+const BUFFER_DASH_STEPS = [
+    [0, 4, 3], [0.5, 4, 2.5], [1, 4, 2], [1.5, 4, 1.5], [2, 4, 1], [2.5, 4, 0.5], [3, 4, 0],
+    [0, 0.5, 3, 3.5], [0, 1, 3, 3], [0, 1.5, 3, 2.5], [0, 2, 3, 2], [0, 2.5, 3, 1.5], [0, 3, 3, 1], [0, 3.5, 3, 0.5]
+];
+
+const projectBuffers = {
+    rings: [],
+    labels: [],
+    timers: [],
+
+    // Convex hull of a circle around each end of the group = a stadium, a true buffer shape
+    ringFor(coords) {
+        const lat0 = coords.reduce((sum, c) => sum + c[1], 0) / coords.length;
+        const lng0 = coords.reduce((sum, c) => sum + c[0], 0) / coords.length;
+        const kx = 111320 * Math.cos(lat0 * Math.PI / 180);
+        const ky = 110540;
+        const pts = [];
+        for (const c of coords) {
+            const cx = (c[0] - lng0) * kx;
+            const cy = (c[1] - lat0) * ky;
+            for (let i = 0; i < 96; i++) {
+                const a = (i / 96) * Math.PI * 2;
+                pts.push([cx + Math.cos(a) * BUFFER_RADIUS_M, cy + Math.sin(a) * BUFFER_RADIUS_M]);
+            }
+        }
+        pts.sort((p, q) => p[0] - q[0] || p[1] - q[1]);
+        const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+        const lower = [], upper = [];
+        for (const p of pts) {
+            while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) lower.pop();
+            lower.push(p);
+        }
+        for (let i = pts.length - 1; i >= 0; i--) {
+            const p = pts[i];
+            while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) upper.pop();
+            upper.push(p);
+        }
+        const hull = lower.slice(0, -1).concat(upper.slice(0, -1));
+        const ring = hull.map(([x, y]) => [lng0 + x / kx, lat0 + y / ky]);
+        ring.push(ring[0]);
+        // the outline starts drawing from its westmost point (sea side); the label sits
+        // under the middle of the sea-side edge
+        const west = hull.reduce((best, p, i) => (p[0] < hull[best][0] ? i : best), 0);
+        const rotated = ring.slice(west, -1).concat(ring.slice(0, west));
+        rotated.push(rotated[0]);
+        const first = coords[0], last = coords[coords.length - 1];
+        let dx = (last[0] - first[0]) * kx, dy = (last[1] - first[1]) * ky;
+        const len = Math.hypot(dx, dy) || 1;
+        let nx = -dy / len, ny = dx / len;
+        if (nx > 0) { nx = -nx; ny = -ny; }
+        const labelAt = [lng0 + (nx * BUFFER_RADIUS_M) / kx, lat0 + (ny * BUFFER_RADIUS_M) / ky];
+        return { ring: rotated, labelAt };
+    },
+
+    data(fraction) {
+        return {
+            type: 'FeatureCollection',
+            features: this.rings.map((r) => {
+                const n = Math.max(2, Math.round(r.ring.length * fraction));
+                return {
+                    type: 'Feature',
+                    properties: { color: r.color, fill: fraction >= 1 ? 1 : 0 },
+                    geometry: fraction >= 1
+                        ? { type: 'Polygon', coordinates: [r.ring] }
+                        : { type: 'LineString', coordinates: r.ring.slice(0, n) }
+                };
+            })
+        };
+    },
+
+    addLayers() {
+        this.rings = BUFFER_GROUPS.map((group) => {
+            const coords = projectsData.filter((p) => (p.group || 'afterHours') === group.key).map((p) => p.coords);
+            return coords.length ? { ...group, ...this.ringFor(coords) } : null;
+        }).filter(Boolean);
+
+        map.addSource('project-buffers', { type: 'geojson', data: this.data(0) });
+        map.addLayer({
+            id: 'project-buffers-fill',
+            type: 'fill',
+            source: 'project-buffers',
+            filter: ['==', ['get', 'fill'], 1],
+            layout: { visibility: 'none' },
+            paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0 , 'fill-opacity-transition': { duration: 800 } }
+        });
+        // a wide, fully blurred line hugging the inside of the edge reads as a soft rim glow
+        map.addLayer({
+            id: 'project-buffers-rim',
+            type: 'line',
+            source: 'project-buffers',
+            filter: ['==', ['get', 'fill'], 1],
+            layout: { visibility: 'none', 'line-join': 'round' },
+            paint: {
+                'line-color': ['get', 'color'],
+                'line-width': 26,
+                'line-blur': 22,
+                'line-opacity': 0,
+                'line-opacity-transition': { duration: 800 }
+            }
+        });
+        map.addLayer({
+            id: 'project-buffers-line',
+            type: 'line',
+            source: 'project-buffers',
+            layout: { visibility: 'none', 'line-join': 'round', 'line-cap': 'round' },
+            paint: { 'line-color': ['get', 'color'], 'line-width': 1.6, 'line-opacity': 0.9, 'line-dasharray': BUFFER_DASH_STEPS[0] }
+        });
+
+        this.labels = this.rings.map((r) => {
+            const el = document.createElement('div');
+            el.className = 'buffer-label';
+            el.style.color = r.color;
+            el.textContent = r.label;
+            return new maplibregl.Marker({ element: el, anchor: 'top', offset: [0, 8] }).setLngLat(r.labelAt);
+        });
+    },
+
+    show() {
+        if (this.shown || !map.getSource('project-buffers')) {
+            return;
+        }
+        this.shown = true;
+        ['project-buffers-fill', 'project-buffers-rim', 'project-buffers-line'].forEach((id) => map.setLayoutProperty(id, 'visibility', 'visible'));
+        const source = map.getSource('project-buffers');
+        const start = performance.now();
+        const drawMs = prefersReducedMotion ? 0 : 1200;
+        const draw = () => {
+            if (!this.shown) {
+                return;
+            }
+            const t = drawMs ? Math.min(1, (performance.now() - start) / drawMs) : 1;
+            source.setData(this.data(1 - Math.pow(1 - t, 3)));
+            if (t < 1) {
+                this.timers.push(requestAnimationFrame(draw));
+                return;
+            }
+            map.setPaintProperty('project-buffers-fill', 'fill-opacity', 0.06);
+            map.setPaintProperty('project-buffers-rim', 'line-opacity', 0.22);
+            this.labels.forEach((label) => {
+                label.addTo(map);
+                requestAnimationFrame(() => label.getElement().classList.add('is-visible'));
+            });
+            if (!prefersReducedMotion) {
+                let step = 0;
+                this.march = setInterval(() => {
+                    step = (step + 1) % BUFFER_DASH_STEPS.length;
+                    map.setPaintProperty('project-buffers-line', 'line-dasharray', BUFFER_DASH_STEPS[step]);
+                }, 140);
+            }
+        };
+        draw();
+    },
+
+    hide() {
+        if (!this.shown) {
+            return;
+        }
+        this.shown = false;
+        this.timers.forEach(cancelAnimationFrame);
+        this.timers = [];
+        clearInterval(this.march);
+        this.labels.forEach((label) => {
+            label.getElement().classList.remove('is-visible');
+            label.remove();
+        });
+        ['project-buffers-fill', 'project-buffers-rim', 'project-buffers-line'].forEach((id) => map.setLayoutProperty(id, 'visibility', 'none'));
+        map.setPaintProperty('project-buffers-fill', 'fill-opacity', 0);
+        map.setPaintProperty('project-buffers-rim', 'line-opacity', 0);
+        map.getSource('project-buffers').setData(this.data(0));
+    }
+};
